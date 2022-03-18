@@ -1,12 +1,12 @@
 from Adafruit_IO import MQTTClient
 import sys
 import time
-import json
 import random
 
-AIO_FEED_ID = "microbit-led"
-AIO_USERNAME =  "HanhHuynh"
-AIO_KEY = "aio_vlMJ54kmQpbQtFfOWXsISIfgx9wx"
+AIO_FEED_ID = "temp-device"
+AIO_USERNAME =  "doantaydo"
+AIO_KEY = "aio_XQVo47rUZ4j6QVoCMnB3wBAuBDtE"
+
 
 def connected(client):
     print("Connected successfully ...")
@@ -34,5 +34,5 @@ while True:
     value = random.randint(0, 100)
     #value = input("Input value: ")
     print("Update:", value)
-    client.publish("microbit-temp", value)
+    client.publish("temp-device", value)
     time.sleep(10)
