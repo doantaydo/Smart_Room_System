@@ -9,7 +9,7 @@ public class CreateAccount : MonoBehaviour
     // Start is called before the first frame update
     public Button signUp;
     public List<InputField> input;
-    public List<Text> warning;
+    public Text warning;
 
     void Start()
     {
@@ -20,10 +20,7 @@ public class CreateAccount : MonoBehaviour
 
     void SignUp()
     {
-        foreach (Text text in warning)
-        {
-            text.gameObject.SetActive(false);
-        }
+        warning.gameObject.SetActive(false);
 
         string userName = input[0].text;
         string brokerID = input[1].text;
@@ -36,20 +33,23 @@ public class CreateAccount : MonoBehaviour
         {
             if (field.text == "")
             {
-                warning[2].gameObject.SetActive(true);
+                warning.text = "Please fill in all your information";
+                warning.gameObject.SetActive(true);
                 return;
             }
         }
 
         if (BinarySerializer.HasSaved(userName))
         {
-            warning[0].gameObject.SetActive(true);
+            warning.text = "Username already exist";
+            warning.gameObject.SetActive(true);
             return;
         }
 
         if (password != repassword)
         {
-            warning[1].gameObject.SetActive(true);
+            warning.text = "Password doesn't match";
+            warning.gameObject.SetActive(true);
             return;
         }
 

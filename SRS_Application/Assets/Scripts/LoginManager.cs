@@ -48,6 +48,10 @@ public class LoginManager : MonoBehaviour
             return;
         }
 
+        PlayerPrefs.SetString("cur_broker_uri", user.broker);
+        PlayerPrefs.SetString("cur_access_token", user.accessToken);
+        PlayerPrefs.SetString("cur_pwd_access_token", user.passwordToken);
+
         SceneManager.LoadScene("main_system");
     }
 }
