@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class heater_state : device_state
+public class LedAutoMode : device_state
 {
     void FixedUpdate() {
-        if (ManagerConnect.instance.heater_state != this.state) {
+        if (ManagerConnect.instance.isAuto != this.state) {
             if (this.state) {
                 //turn on --> off
                 green_ren.color = color_dark;
