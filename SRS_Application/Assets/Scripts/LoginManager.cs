@@ -48,6 +48,6 @@ public class LoginManager : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene("Demo");
+        SceneManager.LoadScene("main_system");
     }
 }
