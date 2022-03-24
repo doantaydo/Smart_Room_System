@@ -2256,17 +2256,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a83d36ddcc71872439872de80ca660a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brokerAddress: io.adafruit.com
+  brokerAddress: io.adafruit
   brokerPort: 1883
   isEncrypted: 0
   connectionDelay: 500
   timeoutOnConnection: 30000
   autoConnect: 1
-  mqttUserName: doantaydo
-  mqttPassword: aio_XQVo47rUZ4j6QVoCMnB3wBAuBDtE
-  Topic: doantaydo/feeds/temp-device
+  mqttUserName: HanhHuynh
+  mqttPassword: aio_fijG67m6gjBPJnT7tUNpoLrboiWk
+  Topic: HanhHuynh/feeds/microbit-temp
   Machine_Id: 
-  Topic_to_Subcribe: doantaydo/feeds/temp-device
+  Topic_to_Subcribe: 
   msg_received_from_topic: 
   text_display: {fileID: 257304977}
 --- !u!1 &1740149081

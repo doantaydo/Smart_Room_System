@@ -166,12 +166,13 @@ namespace M2MqttUnity.Examples
         protected override void Start()
         {
             //SetUiMessage("Ready.");
-            brokerAddress = PlayerPrefs.GetString("cur_broker_uri", "io.adafruit.com");
-            mqttUserName = PlayerPrefs.GetString("cur_access_token", "doantaydo");
-            mqttPassword = PlayerPrefs.GetString("cur_pwd_access_token", "aio_Bqas77KIlnXA1wJAKhqmE4DY4ufh");
+            // brokerAddress = PlayerPrefs.GetString("cur_broker_uri", "io.adafruit.com");
+            // mqttUserName = PlayerPrefs.GetString("cur_access_token", "doantaydo");
+            // mqttPassword = PlayerPrefs.GetString("cur_pwd_access_token", "aio_Bqas77KIlnXA1wJAKhqmE4DY4ufh");
             
-            Topic = "doantaydo/feeds/temp-device";
-            Topic_to_Subcribe = "doantaydo/feeds/temp-device";
+            // Topic = "doantaydo/feeds/temp-device";
+            // Topic_to_Subcribe = "doantaydo/feeds/temp-device";
+            Topic_to_Subcribe = Topic + Machine_Id;
             updateUI = true;
             base.Start();
         }
