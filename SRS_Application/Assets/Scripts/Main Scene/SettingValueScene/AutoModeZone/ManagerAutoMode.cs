@@ -8,8 +8,6 @@ public class ManagerAutoMode : MonoBehaviour
     public void clicked() {
         if (checkValue())
         ManagerConnect.instance.updateAutoMode(min_temp, max_temp);
-        Debug.Log(min_temp.ToString());
-        Debug.Log(max_temp.ToString());
     }
     bool checkValue() {
         string min_temp_value = minTemp.text;
@@ -45,7 +43,6 @@ public class ManagerAutoMode : MonoBehaviour
         for (; i < input.Length; i++) {
             if (checkValue(input,i)) {
                 if (count == 0) result += convert(input, i) / 10;
-                else if (count == 1) result += convert(input, i) /100;
                 count++;
             }
             else return -1;
