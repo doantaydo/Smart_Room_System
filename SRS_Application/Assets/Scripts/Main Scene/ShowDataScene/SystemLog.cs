@@ -9,8 +9,7 @@ public class SystemLog : MonoBehaviour
     public Text txt;
     Queue<string> queueLog;
     int count;
-    void Start()
-    {
+    void Awake() {
         if (instance == null) instance = this;
         queueLog = new Queue<string>();
         count = 0;

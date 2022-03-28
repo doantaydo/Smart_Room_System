@@ -13,16 +13,16 @@ public class ManagerConnect : MonoBehaviour
     // option setting
     float min_temp, max_temp, mid_temp;
     public bool isAuto;
-    void Start() {
+    void Awake() {
         if (instance == null) instance = this;
+    }
+    void Start() {
         isAuto = false;
         light_state = false;
         fan_state = false;
         heater_state = false;
         cur_temp = Random.Range(-99f, 99f);
         connect();
-        getTemp();
-        updateTemp();
     }
     void connect() {
         SystemLog.instance.EnQueue("Connecting to server!!!");
