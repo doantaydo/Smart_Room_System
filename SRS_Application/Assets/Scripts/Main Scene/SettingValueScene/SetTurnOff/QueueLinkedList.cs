@@ -12,11 +12,13 @@ public class device_Waiting {
         this.month = month;
         this.year = year;
         this.type = type;
-        Debug.Log("Create new device waiting:");
+    }
+    public void printData() {
+        Debug.Log("Head queue:");
         Debug.Log(hour.ToString() + ":" + minute.ToString() + ":" + sec.ToString() + "     " + day.ToString() + "/" + month.ToString() + '/' + year.ToString());
         Debug.Log("Type: " + type.ToString());
     }
-    void activeEvent() {
+    public void activeEvent() {
         switch (type) {
             case 1:
                 if (ManagerConnect.instance.light_state) ManagerConnect.instance.changeState(1);
@@ -29,18 +31,57 @@ public class device_Waiting {
                 return;
         }
     }
-    bool checkTime() {
-        //
-        return true;
+    public bool checkTime() {
+        int d = GetTime.getDay(), mo = GetTime.getMonth(), y = GetTime.getYear(), h = GetTime.getHour(), mi = GetTime.getMinute(), s = GetTime.getSec();
+        // Debug.Log("Time get");
+        // Debug.Log(h.ToString() + ":" + mi.ToString() + ":" + s.ToString() + "     " + d.ToString() + "/" + mo.ToString() + '/' + y.ToString());
+
+        if (this.year < y)      return true;
+        else if (this.year == y) {
+            if (this.month < mo) return true;
+            else if (this.month == mo) {
+                if (this.day < d) return true;
+                else if (this.day == d) {
+                    if (this.hour < h) return true;
+                    else if (this.hour == h) {
+                        if (this.minute < mi) return true;
+                        else if (this.minute == mi && this.sec <= s) return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
     public bool isGreatThan(device_Waiting another) {
-        if (this.year   < another.year)   return false;
-        if (this.month  < another.month)  return false;
-        if (this.day    < another.day)    return false;
-        if (this.hour   < another.hour)   return false;
-        if (this.minute < another.minute) return false;
-        if (this.sec    < another.sec)    return false;
+        int d = another.day, mo = another.month, y = another.year, h = another.hour, mi = another.minute, s = another.sec;
+        // Debug.Log("Time get");
+        // Debug.Log(h.ToString() + ":" + mi.ToString() + ":" + s.ToString() + "     " + d.ToString() + "/" + mo.ToString() + '/' + y.ToString());
+
+        if (this.year < y)      return false;
+        else if (this.year == y) {
+            if (this.month < mo) return false;
+            else if (this.month == mo) {
+                if (this.day < d) return false;
+                else if (this.day == d) {
+                    if (this.hour < h) return false;
+                    else if (this.hour == h) {
+                        if (this.minute < mi) return false;
+                        else if (this.minute == mi && this.sec <= s) return false;
+                    }
+                }
+            }
+        }
+
         return true;
+
+        // if (this.year   < another.year)   return false;
+        // if (this.month  < another.month)  return false;
+        // if (this.day    < another.day)    return false;
+        // if (this.hour   < another.hour)   return false;
+        // if (this.minute < another.minute) return false;
+        // if (this.sec    < another.sec)    return false;
+        // return true;
     }
 }
 public class node_device {
@@ -114,11 +155,49 @@ public class QueueLinkedList : MonoBehaviour
             if (head == null) {
                 Debug.Log("Miss head");
             }
-            if (head.addNode(new_node)) {
-                new_node.next = head;
-                head = new_node;
+
+            node_device curr = head, pre = null;
+
+            while (true){ 
+                if (curr.child.isGreatThan(new_node.child)) {
+                    if (pre == null) {
+                        new_node.next = head;
+                        head = new_node;
+                    }
+                    else {
+                        pre.next = new_node;
+                        new_node.next = curr;
+                    }
+                    break;
+                }
+                else {
+                    pre = curr;
+                    curr = curr.next;
+                    if (curr == null) {
+                        pre.next = new_node;
+                        new_node.next = null;
+                        break;
+                    }
+                }
             }
+
         }
         length++;
+
+        head.child.printData();
+    }
+    public bool checkHead() {
+        if (head == null) return false;
+        if (head.child.checkTime()) {
+            Debug.Log("Delete head");
+            head.child.activeEvent();
+            return true;
+        }
+        else return false;
+    }
+    public void DeQueue() {
+        head = head.next;
+        if (head != null) head.child.printData();
+        else Debug.Log("Queue empty");
     }
 }

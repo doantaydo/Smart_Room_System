@@ -11,6 +11,12 @@ public class ManagerSetTurnOff : MonoBehaviour
     void Start() {
         queueTime = new QueueLinkedList();
     }
+    void FixedUpdate() {
+        while (queueTime.checkHead()) {
+            queueTime.DeQueue();
+        }
+    }
+
     public void light_set() {
         if (checkValue()) {
             // make light
