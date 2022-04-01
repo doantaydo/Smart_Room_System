@@ -10,7 +10,7 @@ AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain"]
 AIO_FEED_SENSOR = ["microbit-temp", "microbit-humid", "microbit-light", "microbit-gas"]
 
 AIO_USERNAME = "HanhHuynh"
-AIO_KEY = "aio_fijG67m6gjBPJnT7tUNpoLrboiWk"
+AIO_KEY = "aio_ZbJW476zKJY44M9M0EskA9x1fnh2"
 
 
 def connected(client):
