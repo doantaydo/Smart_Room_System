@@ -1,4 +1,4 @@
-from Adafruit_IO import MQTTClient, Client, Feed, Data
+from Adafruit_IO import MQTTClient, Client
 import sys
 import time
 import json
@@ -45,7 +45,6 @@ dataCurtain = aio.receive("microbit-curtain")
 Curtain = int(dataCurtain.value)
 
 def message(client, feed_id, payload):
-
     if feed_id == "microbit-led":
         device(payload, Fan, Curtain)
     if feed_id == "microbit-fan":
@@ -101,8 +100,11 @@ def processData(data):
             elif splitData[1] == "HUMI":
                 client.publish("microbit-humid", splitData[2])   
         elif splitData[0] == "2":
-            if splitData[1] == "LED":
-                client.publish("microbit-led", splitData[2])        
+            if splitData[1] == "LIGHT":
+                client.publish("microbit-light", splitData[2])   
+        elif splitData[0] == "3":
+            if splitData[1] == "GAS":
+                client.publish("microbit-gas", splitData[2])               
     except: 
         pass        
 
