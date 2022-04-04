@@ -7,7 +7,7 @@ public class ManagerConnect : MonoBehaviour
 {
     public static ManagerConnect instance;
     // DATA OF USER
-    private float cur_temp;
+    public float cur_temp;
     public Text temp_field;
     public bool light_state, fan_state, heater_state;
     // option setting
@@ -66,20 +66,20 @@ public class ManagerConnect : MonoBehaviour
     public void changeState(int device) {
         switch (device) {
             case 1:
-                light_state = !light_state;
+                M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!light_state);
                 if (light_state) SystemLog.instance.EnQueue("Lights: ON");
                 else SystemLog.instance.EnQueue("Lights: OFF");
                 // update to server
                 break;
             case 2:
-                fan_state = !fan_state;
+                M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!fan_state);
                 if (fan_state) SystemLog.instance.EnQueue("Fans: ON");
                 else SystemLog.instance.EnQueue("Fans: OFF");
                 isAuto = false;
                 // update to server
                 break;
             case 3:
-                heater_state = !heater_state;
+                M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!heater_state);
                 if (heater_state) SystemLog.instance.EnQueue("Heaters: ON");
                 else SystemLog.instance.EnQueue("Heaters: OFF");
                 isAuto = false;

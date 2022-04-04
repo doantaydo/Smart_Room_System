@@ -5035,8 +5035,6 @@ GameObject:
   - component: {fileID: 702724755}
   - component: {fileID: 702724754}
   - component: {fileID: 702724756}
-  - component: {fileID: 702724757}
-  - component: {fileID: 702724758}
   m_Layer: 0
   m_Name: MqttConnect
   m_TagString: Untagged
@@ -5056,6 +5054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67798ef97e11d5d4aa7bc6e2bbd32340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cur_temp: 0
   temp_field: {fileID: 508369795}
   light_state: 0
   fan_state: 0
@@ -5082,7 +5081,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 702724753}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7caae4f8dc36a5b4abd30764b040de3e, type: 3}
   m_Name: 
@@ -5095,62 +5094,15 @@ MonoBehaviour:
   autoConnect: 0
   mqttUserName: 
   mqttPassword: 
-  msg_received_from_topic: 
-  text_display: {fileID: 508369795}
---- !u!114 &702724757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702724753}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a83d36ddcc71872439872de80ca660a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  brokerAddress: localhost
-  brokerPort: 1883
-  isEncrypted: 0
-  connectionDelay: 500
-  timeoutOnConnection: 30000
-  autoConnect: 1
-  mqttUserName: 
-  mqttPassword: 
-  Topic: 
+  Topic: doantaydo/feeds/temp-device
   Machine_Id: 
-  Topic_to_Subcribe: 
+  Topic_to_Subcribe: doantaydo/feeds/temp-device
   msg_received_from_topic: 
   text_display: {fileID: 508369795}
---- !u!114 &702724758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702724753}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbaa80705124f9e439d56ca6d5e6db69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  brokerAddress: localhost
-  brokerPort: 1883
-  isEncrypted: 0
-  connectionDelay: 500
-  timeoutOnConnection: 30000
-  autoConnect: 1
-  mqttUserName: 
-  mqttPassword: 
-  autoTest: 0
-  consoleInputField: {fileID: 0}
-  encryptedToggle: {fileID: 0}
-  addressInputField: {fileID: 0}
-  portInputField: {fileID: 0}
-  connectButton: {fileID: 0}
-  disconnectButton: {fileID: 0}
-  testPublishButton: {fileID: 0}
-  clearButton: {fileID: 0}
+  topic_temp: 
+  topic_light: 
+  topic_fan: 
+  topic_heater: 
 --- !u!1 &704963920
 GameObject:
   m_ObjectHideFlags: 0
