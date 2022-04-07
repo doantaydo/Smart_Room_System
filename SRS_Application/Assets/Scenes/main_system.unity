@@ -5060,6 +5060,7 @@ MonoBehaviour:
   fan_state: 0
   heater_state: 0
   isAuto: 0
+  btn_list: []
 --- !u!4 &702724755
 Transform:
   m_ObjectHideFlags: 0
@@ -5096,13 +5097,8 @@ MonoBehaviour:
   mqttPassword: 
   Topic: doantaydo/feeds/temp-device
   Machine_Id: 
-  Topic_to_Subcribe: doantaydo/feeds/temp-device
   msg_received_from_topic: 
   text_display: {fileID: 508369795}
-  topic_temp: 
-  topic_light: 
-  topic_fan: 
-  topic_heater: 
 --- !u!1 &704963920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5558,6 +5554,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80797900e362f8f4f93d780ef2dd9322, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  btn_light: {fileID: 363638250}
+  btn_fan: {fileID: 784081565}
+  btn_heater: {fileID: 1304587609}
 --- !u!1 &767964504
 GameObject:
   m_ObjectHideFlags: 0

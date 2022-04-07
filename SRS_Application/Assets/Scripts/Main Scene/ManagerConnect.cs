@@ -13,6 +13,7 @@ public class ManagerConnect : MonoBehaviour
     // option setting
     float min_temp, max_temp, mid_temp;
     public bool isAuto;
+    public GameObject[] btn_list;
     void Awake() {
         if (instance == null) instance = this;
     }
@@ -21,7 +22,8 @@ public class ManagerConnect : MonoBehaviour
         light_state = false;
         fan_state = false;
         heater_state = false;
-        cur_temp = Random.Range(-99f, 99f);
+        cur_temp = -10000;
+        temp_field.text = "Wait";
         connect();
     }
     void connect() {
@@ -34,6 +36,7 @@ public class ManagerConnect : MonoBehaviour
         else if (heater_state) cur_temp += 0.5f;
     }
     void updateTemp() {
+        if (cur_temp != -10000)
         temp_field.text = cur_temp.ToString("0.0");
     }
     void FixedUpdate()
@@ -64,26 +67,24 @@ public class ManagerConnect : MonoBehaviour
     }
     // support instance
     public void changeState(int device) {
+        bool previous;
         switch (device) {
             case 1:
                 M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!light_state);
                 if (light_state) SystemLog.instance.EnQueue("Lights: ON");
                 else SystemLog.instance.EnQueue("Lights: OFF");
-                // update to server
                 break;
             case 2:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!fan_state);
+                M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
                 if (fan_state) SystemLog.instance.EnQueue("Fans: ON");
                 else SystemLog.instance.EnQueue("Fans: OFF");
                 isAuto = false;
-                // update to server
                 break;
             case 3:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!heater_state);
+                M2MqttUnity.Examples.ClientMQTT.instance.publishHeater(!heater_state);
                 if (heater_state) SystemLog.instance.EnQueue("Heaters: ON");
                 else SystemLog.instance.EnQueue("Heaters: OFF");
                 isAuto = false;
-                // update to server
                 break;
         }
     }

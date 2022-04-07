@@ -6,11 +6,11 @@ import random
 import serial
 import serial.tools.list_ports
 
-AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain"]
+AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain", "microbit-heater"]
 AIO_FEED_SENSOR = ["microbit-temp", "microbit-humid", "microbit-light", "microbit-gas"]
 
-AIO_USERNAME = "HanhHuynh"
-AIO_KEY = "aio_zxHo01T9RbpjqxPoJqdI3ATRA8Bz"
+AIO_USERNAME = "doantaydo"
+AIO_KEY = "aio_amYP54LHVLT3Mpy6IOnvCcdeVkRC"
 
 
 def connected(client):
@@ -41,7 +41,7 @@ dataLed = aio.receive("microbit-led")
 Led = int(dataLed.value)
 dataFan = aio.receive("microbit-fan")
 Fan = int(dataFan.value)
-dataCurtain = aio.receive("microbit-curtain")
+#dataCurtain = aio.receive("microbit-curtain")
 Curtain = int(dataCurtain.value)
 
 def message(client, feed_id, payload):
@@ -49,8 +49,8 @@ def message(client, feed_id, payload):
         device(payload, Fan, Curtain)
     if feed_id == "microbit-fan":
         device(Led, payload, Curtain)
-    if feed_id == "microbit-curtain":
-        device(Led, Fan, payload)        
+    # if feed_id == "microbit-curtain":
+    #     device(Led, Fan, payload)        
     # if isMicrobitConnected:
     #     ser.write((str(payload) + "#").encode())
 
@@ -97,14 +97,14 @@ def processData(data):
             if splitData[1] == "TEMP":
                 client.publish("microbit-temp", splitData[2])
                 handleFan(int(splitData[2]))
-            elif splitData[1] == "HUMI":
-                client.publish("microbit-humid", splitData[2])   
-        elif splitData[0] == "2":
-            if splitData[1] == "LIGHT":
-                client.publish("microbit-light", splitData[2])   
-        elif splitData[0] == "3":
-            if splitData[1] == "GAS":
-                client.publish("microbit-gas", splitData[2])               
+            # elif splitData[1] == "HUMI":
+            #     client.publish("microbit-humid", splitData[2])   
+        # elif splitData[0] == "2":
+        #     if splitData[1] == "LIGHT":
+        #         client.publish("microbit-light", splitData[2])   
+        # elif splitData[0] == "3":
+        #     if splitData[1] == "GAS":
+        #         client.publish("microbit-gas", splitData[2])               
     except: 
         pass        
 
@@ -129,9 +129,9 @@ def test():
     light = random.randint(0, 1023)
     gas = random.randint(0, 1023)
     client.publish("microbit-temp", temp)
-    client.publish("microbit-humid", humi)
-    client.publish("microbit-light", light)
-    client.publish("microbit-gas", gas)
+    #client.publish("microbit-humid", humi)
+    #client.publish("microbit-light", light)
+    #client.publish("microbit-gas", gas)
 
     handleFan(temp)
 

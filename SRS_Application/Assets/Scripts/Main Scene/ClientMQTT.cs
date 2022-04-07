@@ -12,12 +12,12 @@ namespace M2MqttUnity.Examples {
         public static ClientMQTT instance;
         public string Topic = "";
         public string Machine_Id;
-        public string Topic_to_Subcribe = "";
+        //public string Topic_to_Subcribe = "";
         public string msg_received_from_topic = "";
         public Text text_display;
         private List<string> eventMessages = new List<string>();
         private bool updateUI = false;
-        public string topic_temp = "", topic_light = "", topic_fan = "", topic_heater = "";
+        private string topic_temp = "", topic_light = "", topic_fan = "", topic_heater = "";
         protected override void Awake() {
             if (instance == null) instance = this;
             // brokerAddress = PlayerPrefs.GetString("cur_broker_uri", "io.adafruit.com");
@@ -26,16 +26,19 @@ namespace M2MqttUnity.Examples {
             brokerPort = 1883;
 
             brokerAddress = "io.adafruit.com";
-            // mqttUserName = "doantaydo";
-            // mqttPassword = "aio_sKoR22KKkwLAMPdW05LYf7hAyHOG";
-            // Topic = "doantaydo/feeds/temp-device";
+            mqttUserName = "doantaydo";
+            mqttPassword = "aio_amYP54LHVLT3Mpy6IOnvCcdeVkRC";
+
+
+            topic_temp = mqttUserName + "/feeds/microbit-temp";
+            topic_light = mqttUserName + "/feeds/microbit-led";
+            topic_fan = mqttUserName + "/feeds/microbit-fan";
+            topic_heater = mqttUserName + "/feeds/microbit-heater";
             autoConnect = true;
-            
         }
 
-        public void TestPublish()
-        {
-            client.Publish(Topic_to_Subcribe, System.Text.Encoding.UTF8.GetBytes("Test message"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+        public void TestPublish() {
+            //client.Publish(Topic_to_Subcribe, System.Text.Encoding.UTF8.GetBytes("Test message"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
             Debug.Log("Test message published");
             AddUiMessage("Test message published.");
         }
@@ -97,8 +100,17 @@ namespace M2MqttUnity.Examples {
             //}
             SubscribeTopics();
         }
+        bool isPub = false;
         protected override void SubscribeTopics()
         {
+            if (!isPub) {
+                client.Publish(topic_temp, System.Text.Encoding.UTF8.GetBytes("24.03"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                publishFan(false);
+                publishLight(false);
+                publishHeater(false);
+                isPub = true;
+            }
+            
             // if (Topic_to_Subcribe != "")
             // {
             //     client.Subscribe(new string[] { Topic_to_Subcribe }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
@@ -119,7 +131,7 @@ namespace M2MqttUnity.Examples {
 
         protected override void UnsubscribeTopics()
         {
-            client.Unsubscribe(new string[] { Topic_to_Subcribe });
+            //client.Unsubscribe(new string[] { Topic_to_Subcribe });
             client.Unsubscribe(new string[] { topic_temp });
             client.Unsubscribe(new string[] { topic_fan });
             client.Unsubscribe(new string[] { topic_heater });
@@ -198,7 +210,7 @@ namespace M2MqttUnity.Examples {
 
             // Topic = "doantaydo/feeds/temp-device";
             // Topic_to_Subcribe = "doantaydo/feeds/temp-device";
-            Topic_to_Subcribe = Topic + Machine_Id;
+            //Topic_to_Subcribe = Topic + Machine_Id;
             updateUI = true;
             base.Start();
         }
