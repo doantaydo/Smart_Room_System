@@ -16,7 +16,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 /// </summary>
 
 public class BinarySerializer {
-	static string folderName = "GameData";
+	static string folderName = "Account";
 
 	static string persistentDataPath = Application.persistentDataPath;
 	static SurrogateSelector surrogateSelector = GetSurrogateSelector ( );
