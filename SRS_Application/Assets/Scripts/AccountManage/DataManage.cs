@@ -3,38 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System;
 
-public class DataManagement
+public class DataManage : MonoBehaviour
 {
-    static string persistentDataPath = Application.persistentDataPath;
+    static string persistentDataPath;
     static string folderName = "Data";
+
+    public static DataManage instance;
+
+    private void Awake()
+    {
+        persistentDataPath = Application.persistentDataPath;
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
 
     public void SaveTime()
     {
-        string fileName = PlayerPrefs.GetString("cur_user") + ".json";
+        string fileName = PlayerPrefs.GetString("cur_user", "user") + ".json";
 
         UserData newData = new UserData
         {
             date = System.DateTime.Now.ToString("dd/MM/yyyy"),
             time_turn_off_light = System.DateTime.Now.ToString("hh:mm"),
         };
+
+        //Debug.Log(JsonUtility.ToJson(newData));
+        
+
+        if (!Directory.Exists(GetDirPath()))
+        {
+            Directory.CreateDirectory(GetDirPath());
+        }
+
         
 
         //FileStream file;
         if (!File.Exists(GetFilePath(fileName)))
         {
-            File.Create(GetFilePath(fileName));
+            
+            //File.Create(GetFilePath(fileName));
             DataSet newDataSet = new DataSet
             {
                 data = new List<UserData>() { newData },
             };
             string json = JsonUtility.ToJson(newDataSet);
+            
             var jsonObj = JObject.Parse(json);
             string newJsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj,
                                    Newtonsoft.Json.Formatting.Indented);
 
             //string row = Js
-            File.WriteAllText(GetFilePath(fileName), newJsonResult);
+
+            StreamWriter writer = new StreamWriter(GetFilePath(fileName));
+            writer.WriteLine(newJsonResult);
+            writer.Close();
+            
         }
         else
         {
@@ -45,11 +72,20 @@ public class DataManagement
             var data = jsonObj.GetValue("data") as JArray;
             var item = JObject.Parse(row);
 
+            string lastDate = data.Last["date"].ToString();
+            string lastTime = data.Last["time_turn_off_light"].ToString();
+
+            if (DateTime.Now.Subtract(DateTime.Parse(lastDate + " " + lastTime)).Minutes <= 9*60)
+            {
+                //Debug.Log("ok");
+                data.RemoveAt(data.Count - 1);
+            }
             data.Add(item);
             if (data.Count > 30)
             {
                 data.RemoveAt(0);
             }
+            
 
             jsonObj["data"] = data;
             string newJsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj,
@@ -96,17 +132,26 @@ public class DataManagement
 
     static string GetFilePath(string fileName)
     {
-        return persistentDataPath + "/" + folderName + "/" + fileName;
+        return GetDirPath() + "/" + fileName;
     }
 
-    public class UserData
+    static string GetDirPath()
     {
-        public string date { get; set; }
-        public string time_turn_off_light { get; set; }
+        return persistentDataPath + "/" + folderName;
     }
 
-    public class DataSet
-    {
-        public List<UserData> data;
-    }
+
+}
+
+[Serializable]
+public class UserData
+{
+    public string date;
+    public string time_turn_off_light;
+}
+
+[Serializable]
+public class DataSet
+{
+    public List<UserData> data;
 }
