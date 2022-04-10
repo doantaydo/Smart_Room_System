@@ -17,10 +17,14 @@ public class LoginManager : MonoBehaviour
 
     public static Account user = new Account();
 
+    bool login = false;
+
     void Start()
     {
         signUp.onClick.AddListener(SignUp);
         logIn.onClick.AddListener(LogIn);
+
+        PlayerPrefs.DeleteAll();
     }
 
     // Update is called once per frame
@@ -48,9 +52,13 @@ public class LoginManager : MonoBehaviour
             return;
         }
 
+        login = true;
+
         PlayerPrefs.SetString("cur_broker_uri", user.broker);
         PlayerPrefs.SetString("cur_access_token", user.accessToken);
         PlayerPrefs.SetString("cur_pwd_access_token", user.passwordToken);
+
+        PlayerPrefs.SetString("cur_user", username);
 
         SceneManager.LoadScene("main_system");
     }
