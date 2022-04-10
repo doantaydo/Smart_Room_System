@@ -14,7 +14,6 @@ namespace M2MqttUnity.Examples {
         public string Machine_Id;
         //public string Topic_to_Subcribe = "";
         public string msg_received_from_topic = "";
-        public Text text_display;
         private List<string> eventMessages = new List<string>();
         private bool updateUI = false;
         private string topic_temp = "", topic_light = "", topic_fan = "", topic_heater = "";
@@ -26,15 +25,16 @@ namespace M2MqttUnity.Examples {
             brokerPort = 1883;
 
             brokerAddress = "io.adafruit.com";
-            mqttUserName = "doantaydo";
-            mqttPassword = "aio_amYP54LHVLT3Mpy6IOnvCcdeVkRC";
+            mqttUserName = "HanhHuynh";
+            mqttPassword = "aio_oUMU18kutAlwzxs5ehkzvbphSCkN";
 
 
             topic_temp = mqttUserName + "/feeds/microbit-temp";
             topic_light = mqttUserName + "/feeds/microbit-led";
             topic_fan = mqttUserName + "/feeds/microbit-fan";
-            topic_heater = mqttUserName + "/feeds/microbit-heater";
+            // topic_heater = mqttUserName + "/feeds/microbit-heater";
             autoConnect = true;
+            base.Awake();
         }
 
         public void TestPublish() {
@@ -42,22 +42,6 @@ namespace M2MqttUnity.Examples {
             Debug.Log("Test message published");
             AddUiMessage("Test message published.");
         }
-
-        //public void SetBrokerAddress(string brokerAddress)
-        //{
-        //    if (addressInputField && !updateUI)
-        //    {
-        //        this.brokerAddress = brokerAddress;
-        //    }
-        //}
-
-        //public void SetBrokerPort(string brokerPort)
-        //{
-        //    if (portInputField && !updateUI)
-        //    {
-        //        int.TryParse(brokerPort, out this.brokerPort);
-        //    }
-        //}
 
         public void SetEncrypted(bool isEncrypted)
         {
@@ -104,15 +88,16 @@ namespace M2MqttUnity.Examples {
         protected override void SubscribeTopics()
         {
             if (!isPub) {
-                client.Publish(topic_temp, System.Text.Encoding.UTF8.GetBytes("24.03"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
-                publishFan(false);
-                publishLight(false);
-                publishHeater(false);
+                Debug.Log("Pub");
+                client.Publish(topic_temp, System.Text.Encoding.UTF8.GetBytes("-10000"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                // publishFan(false);
+                //publishLight(false);
+                // publishHeater(false);
                 isPub = true;
             }
             
             // if (Topic_to_Subcribe != "")
-            // {
+            // { 
             //     client.Subscribe(new string[] { Topic_to_Subcribe }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             // }
             if (topic_temp != "") {
@@ -211,38 +196,38 @@ namespace M2MqttUnity.Examples {
             // Topic = "doantaydo/feeds/temp-device";
             // Topic_to_Subcribe = "doantaydo/feeds/temp-device";
             //Topic_to_Subcribe = Topic + Machine_Id;
+            SystemLog.instance.EnQueue("Connecting to server!!!");
             updateUI = true;
             base.Start();
+            SystemLog.instance.EnQueue("Connected to server!!!");
         }
 
         protected override void DecodeMessage(string topic, byte[] message)
         {
             string msg = System.Text.Encoding.UTF8.GetString(message);
             msg_received_from_topic = msg;
-            text_display.text = msg;
+            //text_display.text = msg;
             Debug.Log("Received: " + msg);
             StoreMessage(msg);
-            // if (topic == Topic_to_Subcribe)
-            // {
-            //     //if (autoTest)
-            //     //{
-            //     //    autoTest = false;
-            //     //    Disconnect();
-            //     //}
-            // }
-            if (topic == topic_temp) ManagerConnect.instance.cur_temp = float.Parse(msg);
-            else {
-                if (msg == "true") {
-                    if (topic == topic_light) ManagerConnect.instance.light_state = true;
-                    if (topic == topic_fan) ManagerConnect.instance.fan_state = true;
-                    if (topic == topic_heater) ManagerConnect.instance.heater_state = true;
-                }
-                else {
-                    if (topic == topic_light) ManagerConnect.instance.light_state = false;
-                    if (topic == topic_fan) ManagerConnect.instance.fan_state = false;
-                    if (topic == topic_heater) ManagerConnect.instance.heater_state = false;
-                }
+            if (topic == topic_light)
+                ManagerConnect.instance.light_state = (msg == "1");
+            else if (topic == topic_fan)
+                ManagerConnect.instance.fan_state = (msg == "3");
+            else if (topic == topic_temp) {
+                ManagerConnect.instance.cur_temp = float.Parse(msg);
             }
+            // else {
+            //     if (msg == "1") {
+            //         if (topic == topic_light) ManagerConnect.instance.light_state = true;
+            //         if (topic == topic_fan) ManagerConnect.instance.fan_state = true;
+            //         if (topic == topic_heater) ManagerConnect.instance.heater_state = true;
+            //     }
+            //     else {
+            //         if (topic == topic_light) ManagerConnect.instance.light_state = false;
+            //         if (topic == topic_fan) ManagerConnect.instance.fan_state = false;
+            //         if (topic == topic_heater) ManagerConnect.instance.heater_state = false;
+            //     }
+            // }
         }
 
         private void StoreMessage(string eventMsg)
@@ -287,13 +272,13 @@ namespace M2MqttUnity.Examples {
         }
         public void publishLight(bool type) {
             if (topic_light == "") return;
-            if (type) client.Publish(topic_light, System.Text.Encoding.UTF8.GetBytes("true"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
-            else client.Publish(topic_light, System.Text.Encoding.UTF8.GetBytes("false"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            if (type) client.Publish(topic_light, System.Text.Encoding.UTF8.GetBytes("1"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            else client.Publish(topic_light, System.Text.Encoding.UTF8.GetBytes("0"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
         }
         public void publishFan(bool type) {
             if (topic_fan == "") return;
-            if (type) client.Publish(topic_fan, System.Text.Encoding.UTF8.GetBytes("true"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
-            else client.Publish(topic_fan, System.Text.Encoding.UTF8.GetBytes("false"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            if (type) client.Publish(topic_fan, System.Text.Encoding.UTF8.GetBytes("3"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            else client.Publish(topic_fan, System.Text.Encoding.UTF8.GetBytes("2"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
         }
         public void publishHeater(bool type) {
             if (topic_heater == "") return;

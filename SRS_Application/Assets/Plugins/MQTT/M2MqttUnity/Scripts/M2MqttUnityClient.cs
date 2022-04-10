@@ -231,11 +231,14 @@ namespace M2MqttUnity
 
         private void ProcessMqttMessageBackgroundQueue()
         {
-            foreach (MqttMsgPublishEventArgs msg in backMessageQueue)
-            {
-                DecodeMessage(msg.Topic, msg.Message);
+            try {
+                foreach (MqttMsgPublishEventArgs msg in backMessageQueue)
+                {
+                    DecodeMessage(msg.Topic, msg.Message);
+                }
+                backMessageQueue.Clear();
             }
-            backMessageQueue.Clear();
+            catch {}
         }
 
         /// <summary>

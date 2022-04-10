@@ -24,24 +24,18 @@ public class ManagerConnect : MonoBehaviour
         heater_state = false;
         cur_temp = -10000;
         temp_field.text = "Wait";
-        connect();
+        //connect();
     }
-    void connect() {
-        SystemLog.instance.EnQueue("Connecting to server!!!");
-        // wait connect
-        SystemLog.instance.EnQueue("Connected to server!!!");
-    }
-    void getTemp() {
-        if (fan_state) cur_temp -= 0.5f;
-        else if (heater_state) cur_temp += 0.5f;
-    }
+    // void connect() {
+    //     SystemLog.instance.EnQueue("Connecting to server!!!");
+    //     // wait connect
+    //     SystemLog.instance.EnQueue("Connected to server!!!");
+    // }
     void updateTemp() {
-        if (cur_temp != -10000)
-        temp_field.text = cur_temp.ToString("0.0");
+        if (cur_temp != -10000) temp_field.text = ((int)cur_temp).ToString();
     }
     void FixedUpdate()
     {
-        getTemp();
         updateTemp();
 
         if (isAuto) {
