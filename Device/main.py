@@ -6,11 +6,10 @@ import random
 import serial
 import serial.tools.list_ports
 
-AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain", "microbit-heater"]
-AIO_FEED_SENSOR = ["microbit-temp", "microbit-humid", "microbit-light", "microbit-gas"]
+AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain"]
 
-AIO_USERNAME = "doantaydo"
-AIO_KEY = "aio_amYP54LHVLT3Mpy6IOnvCcdeVkRC"
+AIO_USERNAME = "HanhHuynh"
+AIO_KEY = "aio_wctu22eth4ZFyVDh6bNfwkA7A2kM"
 
 
 def connected(client):
@@ -26,33 +25,11 @@ def disconnected(client):
     print("Disconnect ...")
     sys.exit(1)
 
-def device(led, fan, curtain):
-    data_x = {
-        "LED": led,
-        "FAN": fan,
-        "CURTAIN": curtain
-    }
-    data_y = json.dumps(data_x)
-    print(data_y)
 
-aio = Client(AIO_USERNAME, AIO_KEY)
-
-dataLed = aio.receive("microbit-led")
-Led = int(dataLed.value)
-dataFan = aio.receive("microbit-fan")
-Fan = int(dataFan.value)
-#dataCurtain = aio.receive("microbit-curtain")
-Curtain = int(dataCurtain.value)
-
-def message(client, feed_id, payload):
-    if feed_id == "microbit-led":
-        device(payload, Fan, Curtain)
-    if feed_id == "microbit-fan":
-        device(Led, payload, Curtain)
-    # if feed_id == "microbit-curtain":
-    #     device(Led, Fan, payload)        
-    # if isMicrobitConnected:
-    #     ser.write((str(payload) + "#").encode())
+def message(client, feed_id, payload):  
+    print (feed_id + ": " + payload)      
+    if isMicrobitConnected:
+        ser.write(("!" + str(payload) + "#").encode())
 
 client = MQTTClient(AIO_USERNAME, AIO_KEY)
 client.on_connect = connected
@@ -62,31 +39,24 @@ client.on_subscribe = subscribe
 client.connect()
 client.loop_background()
 
-def handleFan(temp):
-    if temp >= 40:
-        client.publish("microbit_fan", 2)
-    elif temp <= 10:
-        client.publish("microbit_fan", 3)  
-
 def getPort():
-    # ports = serial.tools.list_ports.comports()
-    # N = len(ports)
-    # commPort = "None"
-    # for i in range(0, N):
-    #     port = ports[i]
-    #     strPort = str(port)
-    #     if "com0com" in strPort:
-    #         splitPort = strPort.split(" ")
-    #         commPort = (splitPort[0])
-    # return commPort
-    return "COM7"
+    ports = serial.tools.list_ports.comports()
+    N = len(ports)
+    commPort = "None"
+    for i in range(0, N):
+        port = ports[i]
+        strPort = str(port)
+        if "USB Serial Device" in strPort:
+            splitPort = strPort.split(" ")
+            commPort = (splitPort[0])
+    return commPort
+    # return "COM9"
 
 isMicrobitConnected = False
 if getPort() != "None":
     ser = serial.Serial(port=getPort(), baudrate=115200)
     isMicrobitConnected = True
  
-mess = ""
 def processData(data):
     data = data.replace("!", "")
     data = data.replace("#", "")
@@ -96,15 +66,14 @@ def processData(data):
         if splitData[0] == "1":
             if splitData[1] == "TEMP":
                 client.publish("microbit-temp", splitData[2])
-                handleFan(int(splitData[2]))
-            # elif splitData[1] == "HUMI":
-            #     client.publish("microbit-humid", splitData[2])   
-        # elif splitData[0] == "2":
-        #     if splitData[1] == "LIGHT":
-        #         client.publish("microbit-light", splitData[2])   
-        # elif splitData[0] == "3":
-        #     if splitData[1] == "GAS":
-        #         client.publish("microbit-gas", splitData[2])               
+            elif splitData[1] == "HUMI":
+                client.publish("microbit-humid", splitData[2])   
+        elif splitData[0] == "2":
+            if splitData[1] == "LIGHT":
+                client.publish("microbit-light", splitData[2])   
+        elif splitData[0] == "3":
+            if splitData[1] == "GAS":
+                client.publish("microbit-gas", splitData[2])               
     except: 
         pass        
 
@@ -129,11 +98,9 @@ def test():
     light = random.randint(0, 1023)
     gas = random.randint(0, 1023)
     client.publish("microbit-temp", temp)
-    #client.publish("microbit-humid", humi)
-    #client.publish("microbit-light", light)
-    #client.publish("microbit-gas", gas)
-
-    handleFan(temp)
+    client.publish("microbit-humid", humi)
+    client.publish("microbit-light", light)
+    client.publish("microbit-gas", gas)
 
     data_x = {
         "Temp": temp,
@@ -149,9 +116,9 @@ def test():
     time.sleep(10)
 
 while True:
-    # test()
+    test()
 
-    if isMicrobitConnected:
-        readSerial()
+    # if isMicrobitConnected:
+    #     readSerial()
 
-    time.sleep(1)
+    # time.sleep(1)
