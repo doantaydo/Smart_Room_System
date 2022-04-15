@@ -9,7 +9,7 @@ import serial.tools.list_ports
 AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain"]
 
 AIO_USERNAME = "HanhHuynh"
-AIO_KEY = "aio_wctu22eth4ZFyVDh6bNfwkA7A2kM"
+AIO_KEY = "aio_zdAG58j9hv9WNCPX9nEcIN7lplQH"
 
 
 def connected(client):
@@ -40,17 +40,17 @@ client.connect()
 client.loop_background()
 
 def getPort():
-    ports = serial.tools.list_ports.comports()
-    N = len(ports)
-    commPort = "None"
-    for i in range(0, N):
-        port = ports[i]
-        strPort = str(port)
-        if "USB Serial Device" in strPort:
-            splitPort = strPort.split(" ")
-            commPort = (splitPort[0])
-    return commPort
-    # return "COM9"
+    # ports = serial.tools.list_ports.comports()
+    # N = len(ports)
+    # commPort = "None"
+    # for i in range(0, N):
+    #     port = ports[i]
+    #     strPort = str(port)
+    #     if "USB Serial Device" in strPort:
+    #         splitPort = strPort.split(" ")
+    #         commPort = (splitPort[0])
+    # return commPort
+    return "COM7"
 
 isMicrobitConnected = False
 if getPort() != "None":
@@ -92,33 +92,9 @@ def readSerial():
             else:
                 mess = mess[end+1:]           
 
-def test():
-    temp = random.randint(0, 50)
-    humi = random.randint(0, 100)
-    light = random.randint(0, 1023)
-    gas = random.randint(0, 1023)
-    client.publish("microbit-temp", temp)
-    client.publish("microbit-humid", humi)
-    client.publish("microbit-light", light)
-    client.publish("microbit-gas", gas)
-
-    data_x = {
-        "Temp": temp,
-        "Humid": humi,
-        "Light": light,
-        "Gas": gas  
-    }
-
-    data_y = json.dumps(data_x)
-    print("Time:", time.ctime(time.time()))
-    print(data_y)
-
-    time.sleep(10)
 
 while True:
-    test()
+    if isMicrobitConnected:
+        readSerial()
 
-    # if isMicrobitConnected:
-    #     readSerial()
-
-    # time.sleep(1)
+    time.sleep(1)
