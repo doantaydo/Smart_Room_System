@@ -17,14 +17,9 @@ using UnityEngine;
 
         }
 
-        void speak(msg) {
+        void speak(string msg) {
             //speak
         }
-        // speakOutput.instance.speak("...")
-
-        // public void speak(string msg) {
-        //     //synthesizer
-        // }
     }
 //}
 

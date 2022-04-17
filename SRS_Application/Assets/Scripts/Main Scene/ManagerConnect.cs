@@ -7,7 +7,7 @@ public class ManagerConnect : MonoBehaviour
 {
     public static ManagerConnect instance;
     // DATA OF USER
-    public float cur_temp;
+    public float cur_temp, cur_light, cur_gas;
     public Text temp_field;
     public bool light_state, fan_state, heater_state;
     // option setting
@@ -24,13 +24,7 @@ public class ManagerConnect : MonoBehaviour
         heater_state = false;
         cur_temp = -10000;
         temp_field.text = "Wait";
-        //connect();
     }
-    // void connect() {
-    //     SystemLog.instance.EnQueue("Connecting to server!!!");
-    //     // wait connect
-    //     SystemLog.instance.EnQueue("Connected to server!!!");
-    // }
     void updateTemp() {
         if (cur_temp != -10000) temp_field.text = ((int)cur_temp).ToString();
     }
@@ -64,7 +58,7 @@ public class ManagerConnect : MonoBehaviour
         bool previous;
         switch (device) {
             case 1:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishLight(!light_state);
+                M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
                 if (light_state) SystemLog.instance.EnQueue("Lights: ON");
                 else SystemLog.instance.EnQueue("Lights: OFF");
                 break;
