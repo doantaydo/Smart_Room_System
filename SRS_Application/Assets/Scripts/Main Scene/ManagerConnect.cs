@@ -6,19 +6,23 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 public class ManagerConnect : MonoBehaviour
 {
     public static ManagerConnect instance;
+    public float LIGHT_POINT, GAS_POINT;
     // DATA OF USER
     public float cur_temp, cur_light, cur_gas;
     public Text temp_field;
     public bool light_state, fan_state, heater_state;
+    public bool isAuto, isAutoLight;
+    public GameObject canvasMain, isSleep, warningGas;
     // option setting
     float min_temp, max_temp, mid_temp;
-    public bool isAuto;
-    public GameObject[] btn_list;
+    // GAS WARNING TIME
+    int warn_hour, warn_minute, warn_day, warn_month, warn_year;
     void Awake() {
         if (instance == null) instance = this;
     }
     void Start() {
         isAuto = false;
+        isAutoLight = false;
         light_state = false;
         fan_state = false;
         heater_state = false;
@@ -48,9 +52,36 @@ public class ManagerConnect : MonoBehaviour
                 if (heater_state) changeState(3);
                 isAuto = true;
             }
+
+            
         }
+        if (isAutoLight) {
+            if ((cur_light < LIGHT_POINT) && (light_state == false)) changeState(1);
+            if ((cur_light >= LIGHT_POINT) && (light_state == true)) changeState(1);
+        }
+
+        if (cur_gas >= GAS_POINT) warningGasIsOut();
+    }
+    void warningGasIsOut() {
+        int cur_warn_hour = GetTime.getHour();
+        int cur_warn_minute = GetTime.getMinute();
+        int cur_warn_day = GetTime.getDay();
+        int cur_warn_month = GetTime.getMonth();
+        int cur_warn_year = GetTime.getYear();
+        if ((cur_warn_year == warn_year) && (cur_warn_month == warn_month) && (cur_warn_day == warn_day)) {
+            if ((warn_minute > 50) && (cur_warn_hour - warn_hour < 2) && (cur_warn_minute + 60 - warn_minute < 10)) return;
+            else if ((cur_warn_hour == warn_hour) && (cur_warn_minute - warn_minute < 10)) return;
+        }
+        warn_hour   = cur_warn_hour;
+        warn_minute = cur_warn_minute;
+        warn_day    = cur_warn_day;
+        warn_month  = cur_warn_month;
+        warn_year   = cur_warn_year;
+        canvasMain.SetActive(false);
+        warningGas.SetActive(true);
     }
     public void LogOut() {
+        M2MqttUnity.Examples.ClientMQTT.instance.OnDestroy();
         SceneManager.LoadScene("Login");
     }
     // support instance

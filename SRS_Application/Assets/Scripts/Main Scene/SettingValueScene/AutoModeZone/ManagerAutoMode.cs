@@ -10,6 +10,9 @@ public class ManagerAutoMode : MonoBehaviour
         if (checkValue())
         ManagerConnect.instance.updateAutoMode(min_temp, max_temp);
     }
+    public void turnAutoLight() {
+        ManagerConnect.instance.isAutoLight = !ManagerConnect.instance.isAutoLight;
+    }
     bool checkValue() {
         string min_temp_value = minTemp.text;
         string max_temp_value = maxTemp.text;

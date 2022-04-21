@@ -61,7 +61,7 @@ namespace M2MqttUnity.Examples {
                 Debug.Log("Pub");
                 publishTemp(25);
                 publishLight(5);
-                publishGas(1);
+                publishGas(10);
                 publishLed(false);
                 publishFan(false);
                 isPub = true;
@@ -137,7 +137,7 @@ namespace M2MqttUnity.Examples {
             }
         }
 
-        private void OnDestroy() {
+        public void OnDestroy() {
             Disconnect();
         }
 
