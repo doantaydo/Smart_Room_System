@@ -25,7 +25,9 @@ namespace M2MqttUnity.Examples {
 
             brokerAddress = "io.adafruit.com";
             mqttUserName = "doantaydo";
-            mqttPassword = "aio_UGWa25DKmDrJ86aeApge3I94aB1l";
+            mqttPassword = "aio_UGWa25DKmDrJ86aeApge3I94aB1la";
+            mqttPassword = mqttPassword.Substring(0, mqttPassword.Length - 1);
+            Debug.Log(mqttPassword);
 
 
             topic_temp = mqttUserName + "/feeds/microbit-temp";
