@@ -62,8 +62,8 @@ namespace M2MqttUnity.Examples {
                 publishTemp(25);
                 publishLight(5);
                 publishGas(10);
-                publishLed(false);
-                publishFan(false);
+                publishLed(true);
+                publishFan(true);
                 isPub = true;
             }
             

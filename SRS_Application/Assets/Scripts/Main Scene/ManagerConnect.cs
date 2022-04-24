@@ -13,6 +13,7 @@ public class ManagerConnect : MonoBehaviour
     public bool light_state, fan_state, heater_state;
     public bool isAuto, isAutoLight;
     public GameObject canvasMain, isSleep, warningGas;
+    public int hourSleep = 0, minuteSleep = 0;
     // option setting
     float min_temp, max_temp, mid_temp;
     // GAS WARNING TIME
@@ -35,7 +36,8 @@ public class ManagerConnect : MonoBehaviour
     void FixedUpdate()
     {
         updateTemp();
-
+        // auto mod
+        // auto turn on/off FAN follow the temperature
         if (isAuto) {
             if (cur_temp < min_temp + (mid_temp - min_temp) / 2) {
                 if (!heater_state) changeState(3);
@@ -52,15 +54,54 @@ public class ManagerConnect : MonoBehaviour
                 if (heater_state) changeState(3);
                 isAuto = true;
             }
-
-            
         }
+
+        // auto turn on/off light follow the light sensitive
         if (isAutoLight) {
             if ((cur_light < LIGHT_POINT) && (light_state == false)) changeState(1);
             if ((cur_light >= LIGHT_POINT) && (light_state == true)) changeState(1);
         }
-
+        // warning if the gas is out of
         if (cur_gas >= GAS_POINT) warningGasIsOut();
+        // warning if the user is sleeping
+
+        sleepControl.instance.StartRunning();
+        canvasMain.SetActive(false);
+        isSleep.SetActive(true);
+
+        // int cur_h = GetTime.getHour(), cur_m = GetTime.getMinute();
+        // if ((cur_h >= 20 && cur_h <= 4) || (cur_h == 5 && cur_m == 0) && light_state == true) {
+        //     if ((cur_h > hourSleep) || (cur_h == hourSleep && cur_m >= minuteSleep)) {
+        //         sleepControl.instance.StartRunning();
+        //         canvasMain.SetActive(false);
+        //         isSleep.SetActive(true);
+        //     }
+        // }
+        // update sleeping time
+        updateSleepTime();
+    }
+    bool hadUpdatedToDay = false;
+    void updateSleepTime() {
+        int cur_h = GetTime.getHour();
+        if (cur_h >= 6 && cur_h < 20) {
+            if (hadUpdatedToDay == false) {
+                //call method update time
+                hadUpdatedToDay = true;
+            }
+        }
+        else hadUpdatedToDay = false;
+
+    }
+    public void notSleep() {
+        sleepControl.instance.stopCount();
+        canvasMain.SetActive(true);
+        isSleep.SetActive(false);
+        if (minuteSleep < 30) minuteSleep += 30;
+        else {
+            hourSleep += 1;
+            minuteSleep -= 30;
+            if (hourSleep == 24) hourSleep = 0;
+        }
     }
     void warningGasIsOut() {
         int cur_warn_hour = GetTime.getHour();
@@ -84,14 +125,19 @@ public class ManagerConnect : MonoBehaviour
         M2MqttUnity.Examples.ClientMQTT.instance.OnDestroy();
         SceneManager.LoadScene("Login");
     }
-    // support instance
     public void changeState(int device) {
         bool previous;
         switch (device) {
             case 1:
                 M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
                 if (light_state) SystemLog.instance.EnQueue("Lights: ON");
-                else SystemLog.instance.EnQueue("Lights: OFF");
+                else {
+                    SystemLog.instance.EnQueue("Lights: OFF");
+                    int cur_h = GetTime.getHour();
+                    int cur_m = GetTime.getMinute();
+                    if (cur_h >= 20 && cur_h <= 4) DataManage.instance.SaveTime(); // from 20h00 to 4h59
+                    else if (cur_h == 5 && cur_m == 0) DataManage.instance.SaveTime(); // at 5h
+                }
                 break;
             case 2:
                 M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
