@@ -27,7 +27,7 @@ public class CreateAccount : MonoBehaviour
         string accessToken = input[2].text;
         string password = input[4].text;
         string repassword = input[5].text;
-        string passwordToken = input[3].text;
+        string passwordToken = input[3].text + "a";
 
         foreach (InputField field in input)
         {

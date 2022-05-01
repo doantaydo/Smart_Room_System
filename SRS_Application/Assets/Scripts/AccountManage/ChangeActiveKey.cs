@@ -42,7 +42,7 @@ public class ChangeActiveKey : MonoBehaviour
             return;
         }
 
-        user.passwordToken = activeKey.text;
+        user.passwordToken = activeKey.text + "a";
         BinarySerializer.Save<Account>(user, username);
 
         //login = true;

@@ -6,9 +6,8 @@ import json
 import random
 import serial
 import os
-import serial.tools.list_ports
 
-AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-curtain"]
+AIO_FEED_DEVICE = ["microbit-led", "microbit-fan", "microbit-buzzer", "microbit-door"]
 
 load_dotenv()
 
@@ -44,17 +43,7 @@ client.connect()
 client.loop_background()
 
 def getPort():
-    # ports = serial.tools.list_ports.comports()
-    # N = len(ports)
-    # commPort = "None"
-    # for i in range(0, N):
-    #     port = ports[i]
-    #     strPort = str(port)
-    #     if "USB Serial Device" in strPort:
-    #         splitPort = strPort.split(" ")
-    #         commPort = (splitPort[0])
-    # return commPort
-    return "COM7"
+    return "COM4"
 
 isMicrobitConnected = False
 if getPort() != "None":
@@ -96,32 +85,32 @@ def readSerial():
             else:
                 mess = mess[end+1:]           
 
-def test():
-    temp = random.randint(0, 50)
-    humi = random.randint(0, 100)
-    light = random.randint(0, 1023)
-    gas = random.randint(0, 1023)
-    client.publish("microbit-temp", temp)
-    client.publish("microbit-humid", humi)
-    client.publish("microbit-light", light)
-    client.publish("microbit-gas", gas)
+# def test():
+#     temp = random.randint(0, 50)
+#     humi = random.randint(0, 100)
+#     light = random.randint(0, 1023)
+#     gas = random.randint(0, 1023)
+#     client.publish("microbit-temp", temp)
+#     client.publish("microbit-humid", humi)
+#     client.publish("microbit-light", light)
+#     client.publish("microbit-gas", gas)
 
-    data_x = {
-        "Temp": temp,
-        "Humid": humi,
-        "Light": light,
-        "Gas": gas  
-    }
+#     data_x = {
+#         "Temp": temp,
+#         "Humid": humi,
+#         "Light": light,
+#         "Gas": gas  
+#     }
 
-    data_y = json.dumps(data_x)
-    print("Time:", time.ctime(time.time()))
-    print(data_y)
+#     data_y = json.dumps(data_x)
+#     print("Time:", time.ctime(time.time()))
+#     print(data_y)
 
-    time.sleep(10)
+#     time.sleep(10)
 
 while True:
-    test()
-    # if isMicrobitConnected:
-    #     readSerial()
+    # test()
+    if isMicrobitConnected:
+        readSerial()
 
-    # time.sleep(1)
+    time.sleep(1)
