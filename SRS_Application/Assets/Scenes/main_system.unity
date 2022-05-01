@@ -6230,6 +6230,8 @@ MonoBehaviour:
   light_state: 0
   fan_state: 0
   heater_state: 0
+  bell_state: 0
+  door_state: 0
   isAuto: 0
   isAutoLight: 0
   canvasMain: {fileID: 1571271235}
@@ -6274,6 +6276,11 @@ MonoBehaviour:
   Topic: doantaydo/feeds/temp-device
   Machine_Id: 
   msg_received_from_topic: 
+  start_temp: 25
+  start_light: 2
+  start_gas: 1
+  start_led: 0
+  start_fan: 0
 --- !u!1 &704963920
 GameObject:
   m_ObjectHideFlags: 0
@@ -16057,22 +16064,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 532909116}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1571271235}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 702724754}
+        m_TargetAssemblyTypeName: ManagerConnect, Assembly-CSharp
+        m_MethodName: stopWarningGas
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

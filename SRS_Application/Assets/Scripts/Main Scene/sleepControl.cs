@@ -12,8 +12,10 @@ public class sleepControl : MonoBehaviour
     }
     public void StartRunning()
     {
-        time = 10;
-        field.text = time.ToString();
+        if (time < 0) {
+            time = 10;
+            field.text = time.ToString();
+        }
     }
 
     // Update is called once per frame

@@ -16,6 +16,7 @@ namespace M2MqttUnity.Examples {
         public string msg_received_from_topic = "";
         private List<string> eventMessages = new List<string>();
         private string topic_temp = "", topic_led = "", topic_fan = "", topic_light = "", topic_gas = "";
+        private string topic_bell = "", topic_door = "";
         protected override void Awake() {
             if (instance == null) instance = this;
             // brokerAddress = PlayerPrefs.GetString("cur_broker_uri", "io.adafruit.com");
@@ -35,6 +36,8 @@ namespace M2MqttUnity.Examples {
             topic_fan = mqttUserName + "/feeds/microbit-fan";
             topic_light = mqttUserName + "/feeds/microbit-light";
             topic_gas = mqttUserName + "/feeds/microbit-gas";
+            topic_bell = mqttUserName + "/feeds/microbit-buzzer";
+            topic_door = mqttUserName + "/feeds/microbit-door";
 
             autoConnect = true;
             base.Awake();
@@ -55,15 +58,19 @@ namespace M2MqttUnity.Examples {
             SubscribeTopics();
         }
         bool isPub = false;
+        public int start_temp = 25, start_light = 2, start_gas = 1;
+        public bool start_led = false, start_fan = false;
         protected override void SubscribeTopics()
         {
             if (!isPub) {
                 Debug.Log("Pub");
-                publishTemp(25);
-                publishLight(5);
-                publishGas(10);
-                publishLed(true);
-                publishFan(true);
+                publishTemp(start_temp);
+                publishLight(start_light);
+                publishGas(start_gas);
+                publishLed(start_led);
+                publishFan(start_fan);
+                publishBell(false);
+                publishDoor(false);
                 isPub = true;
             }
             
@@ -77,6 +84,10 @@ namespace M2MqttUnity.Examples {
                 client.Subscribe(new string[] { topic_light }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             if (topic_gas != "")
                 client.Subscribe(new string[] { topic_gas }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            if (topic_bell != "")
+                client.Subscribe(new string[] { topic_bell }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            if (topic_door != "")
+                client.Subscribe(new string[] { topic_door }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
         }
 
         protected override void UnsubscribeTopics() {
@@ -85,6 +96,8 @@ namespace M2MqttUnity.Examples {
             client.Unsubscribe(new string[] { topic_led });
             client.Unsubscribe(new string[] { topic_light });
             client.Unsubscribe(new string[] { topic_gas });
+            client.Unsubscribe(new string[] { topic_bell });
+            client.Unsubscribe(new string[] { topic_door });
         }
 
         protected override void OnConnectionFailed(string errorMessage) {}
@@ -110,6 +123,10 @@ namespace M2MqttUnity.Examples {
                 ManagerConnect.instance.light_state = (msg == "1");
             if (topic == topic_fan)
                 ManagerConnect.instance.fan_state = (msg == "3");
+            if (topic == topic_bell)
+                ManagerConnect.instance.bell_state = (msg == "5");
+            if (topic == topic_door)
+                ManagerConnect.instance.door_state = (msg == "7");
             if (topic == topic_temp)
                 ManagerConnect.instance.cur_temp = float.Parse(msg);
             if (topic == topic_light)
@@ -151,6 +168,16 @@ namespace M2MqttUnity.Examples {
             if (topic_fan == "") return;
             if (type) client.Publish(topic_fan, System.Text.Encoding.UTF8.GetBytes("3"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
             else client.Publish(topic_fan, System.Text.Encoding.UTF8.GetBytes("2"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+        }
+        public void publishBell(bool type) {
+            if (topic_bell == "") return;
+            if (type) client.Publish(topic_bell, System.Text.Encoding.UTF8.GetBytes("5"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            else client.Publish(topic_bell, System.Text.Encoding.UTF8.GetBytes("4"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+        }
+        public void publishDoor(bool type) {
+            if (topic_door == "") return;
+            if (type) client.Publish(topic_door, System.Text.Encoding.UTF8.GetBytes("7"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            else client.Publish(topic_door, System.Text.Encoding.UTF8.GetBytes("6"), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
         }
         public void publishTemp(float value) {
             if (topic_temp == "") return;
