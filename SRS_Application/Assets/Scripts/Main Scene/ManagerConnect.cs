@@ -15,6 +15,7 @@ public class ManagerConnect : MonoBehaviour
     public bool isAuto, isAutoLight;
     public GameObject canvasMain, isSleep, warningGas;
     public int hourSleep = 0, minuteSleep = 0;
+    public AudioSource warningBell;
     // option setting
     float min_temp, max_temp, mid_temp;
     // GAS WARNING TIME
@@ -133,8 +134,8 @@ public class ManagerConnect : MonoBehaviour
         canvasMain.SetActive(false);
         warningGas.SetActive(true);
 
+        warningBell.Play();
         changeSystemState(2);
-
         changeState(4);
     }
     
@@ -142,6 +143,7 @@ public class ManagerConnect : MonoBehaviour
         canvasMain.SetActive(true);
         warningGas.SetActive(false);
 
+        warningBell.Stop();
         changeState(4);
         changeSystemState(0);
     }
@@ -187,35 +189,36 @@ public class ManagerConnect : MonoBehaviour
         bool previous;
         switch (device) {
             case 1:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
-                if (light_state) SystemLog.instance.EnQueue("Lights: ON");
-                else {
+                if (light_state == false) SystemLog.instance.EnQueue("Lights: ON");
+                else
+                {
                     SystemLog.instance.EnQueue("Lights: OFF");
                     int cur_h = GetTime.getHour();
                     int cur_m = GetTime.getMinute();
                     if (cur_h >= 20 && cur_h <= 4) DataManage.instance.SaveTime(); // from 20h00 to 4h59
                     else if (cur_h == 5 && cur_m == 0) DataManage.instance.SaveTime(); // at 5h
                 }
+                M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
                 break;
             case 2:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
-                if (fan_state) SystemLog.instance.EnQueue("Fans: ON");
+                if (fan_state == false) SystemLog.instance.EnQueue("Fans: ON");
                 else SystemLog.instance.EnQueue("Fans: OFF");
+                M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
                 isAuto = false;
                 break;
             case 3:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishHeater(!heater_state);
-                if (heater_state) SystemLog.instance.EnQueue("Heaters: ON");
+                if (heater_state == false) SystemLog.instance.EnQueue("Heaters: ON");
                 else SystemLog.instance.EnQueue("Heaters: OFF");
+                M2MqttUnity.Examples.ClientMQTT.instance.publishHeater(!heater_state);
                 isAuto = false;
                 break;
             case 4:
                 M2MqttUnity.Examples.ClientMQTT.instance.publishBell(!bell_state);
                 break;
             case 5:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishDoor(!door_state);
-                if (heater_state) SystemLog.instance.EnQueue("Door: OPEN");
+                if (door_state == false) SystemLog.instance.EnQueue("Door: OPEN");
                 else SystemLog.instance.EnQueue("Door: CLOSE");
+                M2MqttUnity.Examples.ClientMQTT.instance.publishDoor(!door_state);                
                 break;
         }
     }

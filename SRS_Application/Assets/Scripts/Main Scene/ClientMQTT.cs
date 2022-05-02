@@ -19,15 +19,17 @@ namespace M2MqttUnity.Examples {
         private string topic_bell = "", topic_door = "";
         protected override void Awake() {
             if (instance == null) instance = this;
-            // brokerAddress = PlayerPrefs.GetString("cur_broker_uri", "io.adafruit.com");
-            // mqttUserName = PlayerPrefs.GetString("cur_access_token", "doantaydo");
-            // mqttPassword = PlayerPrefs.GetString("cur_pwd_access_token", "aio_sKoR22KKkwLAMPdW05LYf7hAyHOG");
+            brokerAddress = PlayerPrefs.GetString("cur_broker_uri");
+            mqttUserName = PlayerPrefs.GetString("cur_access_token");
+            mqttPassword = PlayerPrefs.GetString("cur_pwd_access_token");
             brokerPort = 1883;
 
-            brokerAddress = "io.adafruit.com";
-            mqttUserName = "doantaydo";
-            mqttPassword = "aio_UGWa25DKmDrJ86aeApge3I94aB1la";
+            // brokerAddress = "io.adafruit.com";
+            // mqttUserName = "doantaydo";
+            // mqttPassword = "aio_UGWa25DKmDrJ86aeApge3I94aB1la";
             mqttPassword = mqttPassword.Substring(0, mqttPassword.Length - 1);
+            Debug.Log(brokerAddress);
+            Debug.Log(mqttUserName);
             Debug.Log(mqttPassword);
 
 
@@ -57,18 +59,18 @@ namespace M2MqttUnity.Examples {
             base.OnConnected();
             SubscribeTopics();
         }
-        bool isPub = false;
+        public bool isPub = false;
         public int start_temp = 25, start_light = 2, start_gas = 1;
         public bool start_led = false, start_fan = false;
         protected override void SubscribeTopics()
         {
             if (!isPub) {
                 Debug.Log("Pub");
-                publishTemp(start_temp);
-                publishLight(start_light);
-                publishGas(start_gas);
-                publishLed(start_led);
-                publishFan(start_fan);
+                publishTemp(-1000);
+                publishLight(0);
+                publishGas(0);
+                publishLed(false);
+                publishFan(false);
                 publishBell(false);
                 publishDoor(false);
                 isPub = true;
