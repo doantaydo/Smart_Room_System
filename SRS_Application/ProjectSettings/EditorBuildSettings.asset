@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Login.unity
     guid: 427fca292210d1645ab6df7b34457e3b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Demo.unity
     guid: 6765fd4284486b048b4739db276869b0
   - enabled: 1
@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/main_system.unity
     guid: 498d35e9381fd134c98e842131574e27
+  - enabled: 1
+    path: Assets/Scenes/ChangeActiveKey.unity
+    guid: f86fd0f5afd096d49ba2ed6b4e8e5adc
   m_configObjects: {}

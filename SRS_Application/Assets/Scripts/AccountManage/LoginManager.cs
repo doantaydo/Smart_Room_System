@@ -9,6 +9,7 @@ public class LoginManager : MonoBehaviour
     // Start is called before the first frame update
     public Button signUp;
     public Button logIn;
+    public Button changeActiveKey;
 
     public InputField userName;
     public InputField password;
@@ -23,6 +24,7 @@ public class LoginManager : MonoBehaviour
     {
         signUp.onClick.AddListener(SignUp);
         logIn.onClick.AddListener(LogIn);
+        changeActiveKey.onClick.AddListener(ChangeScene);
 
         PlayerPrefs.DeleteAll();
     }
@@ -49,6 +51,7 @@ public class LoginManager : MonoBehaviour
         if (pwd != user.password)
         {
             warningText.gameObject.SetActive(true);
+            user = null;
             return;
         }
 
@@ -61,5 +64,10 @@ public class LoginManager : MonoBehaviour
         PlayerPrefs.SetString("cur_user", username);
 
         SceneManager.LoadScene("main_system");
+    }
+
+    void ChangeScene()
+    {
+        SceneManager.LoadScene("ChangeActiveKey");
     }
 }
