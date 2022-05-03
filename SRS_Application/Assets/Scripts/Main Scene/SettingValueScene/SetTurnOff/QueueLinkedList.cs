@@ -107,6 +107,7 @@ public class node_device {
 }
 public class QueueLinkedList : MonoBehaviour
 {
+    
     node_device head;
     int length;
     public QueueLinkedList() {

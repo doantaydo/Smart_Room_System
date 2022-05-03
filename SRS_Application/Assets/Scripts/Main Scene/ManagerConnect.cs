@@ -234,4 +234,16 @@ public class ManagerConnect : MonoBehaviour
         else SystemLog.instance.EnQueue("Auto Mode: OFF");
         isAuto = !isAuto;
     }
+    public void updateAutoLight() {
+        if (isAutoLight) SystemLog.instance.EnQueue("Auto Light Mode: OFF");
+        else SystemLog.instance.EnQueue("Auto Light Mode: ON");
+        isAutoLight = !isAutoLight;
+    }
+    public void iHere() {
+        switch (system_state) {
+            case 1: notSleep(); return;
+            case 2: stopWarningGas(); return;
+            default: return;
+        }
+    }
 }
