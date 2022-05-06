@@ -60,13 +60,13 @@ namespace M2MqttUnity.Examples {
             SubscribeTopics();
         }
         public bool isPub = false;
-        public int start_temp = 25, start_light = 2, start_gas = 1;
+        public int start_temp = 0, start_light = 2, start_gas = 1;
         public bool start_led = false, start_fan = false;
         protected override void SubscribeTopics()
         {
             if (!isPub) {
                 Debug.Log("Pub");
-                publishTemp(-1000);
+                publishTemp(start_temp);
                 publishLight(0);
                 publishGas(0);
                 publishLed(false);

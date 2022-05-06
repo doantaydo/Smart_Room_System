@@ -6568,8 +6568,8 @@ MonoBehaviour:
   msg_received_from_topic: 
   isPub: 0
   start_temp: 25
-  start_light: 2
-  start_gas: 5
+  start_light: 0
+  start_gas: 0
   start_led: 0
   start_fan: 0
 --- !u!1 &704963920
