@@ -5,9 +5,16 @@ using UnityEngine.UI;
 
 public class ManagerSetTurnOff : MonoBehaviour
 {
+    public static ManagerSetTurnOff instance;
     public Text hour,minute,second;
     int hour_value, minute_value, second_value;
     QueueLinkedList queueTime;
+    void Awake() {
+        if (instance == null) instance = this;
+    }
+    public void setAdd(int device, int hh, int mm, int ss) {
+        queueTime.addQueue(hh,mm,ss,device);
+    }
     void Start() {
         queueTime = new QueueLinkedList();
     }

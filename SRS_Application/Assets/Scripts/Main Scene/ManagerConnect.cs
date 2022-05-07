@@ -11,13 +11,17 @@ public class ManagerConnect : MonoBehaviour
     public float cur_temp, cur_light, cur_gas;
     public Text temp_field;
     public bool light_state, fan_state, heater_state;
+    public bool bell_state, door_state;
     public bool isAuto, isAutoLight;
     public GameObject canvasMain, isSleep, warningGas;
     public int hourSleep = 0, minuteSleep = 0;
+    public AudioSource warningBell;
     // option setting
     float min_temp, max_temp, mid_temp;
     // GAS WARNING TIME
     int warn_hour, warn_minute, warn_day, warn_month, warn_year;
+
+    int system_state;
     void Awake() {
         if (instance == null) instance = this;
     }
@@ -25,17 +29,14 @@ public class ManagerConnect : MonoBehaviour
         isAuto = false;
         isAutoLight = false;
         light_state = false;
-        fan_state = false;
-        heater_state = false;
         cur_temp = -10000;
         temp_field.text = "Wait";
-    }
-    void updateTemp() {
-        if (cur_temp != -10000) temp_field.text = ((int)cur_temp).ToString();
+
+        system_state = 0;
     }
     void FixedUpdate()
     {
-        updateTemp();
+        if (cur_temp != -10000) temp_field.text = ((int)cur_temp).ToString();
         // auto mod
         // auto turn on/off FAN follow the temperature
         if (isAuto) {
@@ -63,20 +64,12 @@ public class ManagerConnect : MonoBehaviour
         }
         // warning if the gas is out of
         if (cur_gas >= GAS_POINT) warningGasIsOut();
+
         // warning if the user is sleeping
-
-        sleepControl.instance.StartRunning();
-        canvasMain.SetActive(false);
-        isSleep.SetActive(true);
-
-        // int cur_h = GetTime.getHour(), cur_m = GetTime.getMinute();
-        // if ((cur_h >= 20 && cur_h <= 4) || (cur_h == 5 && cur_m == 0) && light_state == true) {
-        //     if ((cur_h > hourSleep) || (cur_h == hourSleep && cur_m >= minuteSleep)) {
-        //         sleepControl.instance.StartRunning();
-        //         canvasMain.SetActive(false);
-        //         isSleep.SetActive(true);
-        //     }
-        // }
+        int cur_h = GetTime.getHour(), cur_m = GetTime.getMinute();
+        if ((cur_h >= 20 && cur_h <= 4) || (cur_h == 5 && cur_m == 0) && light_state == true)
+            if ((cur_h > hourSleep) || (cur_h == hourSleep && cur_m >= minuteSleep))
+                warningSleeping();
         // update sleeping time
         updateSleepTime();
     }
@@ -90,18 +83,37 @@ public class ManagerConnect : MonoBehaviour
             }
         }
         else hadUpdatedToDay = false;
-
+    }
+    void warningSleeping() {
+        if (changeSystemState(1)) {
+            sleepControl.instance.StartRunning();
+            canvasMain.SetActive(false);
+            isSleep.SetActive(true);
+        }
+        else {
+            if (minuteSleep < 30) minuteSleep += 30;
+            else {
+                hourSleep += 1;
+                minuteSleep -= 30;
+                if (hourSleep == 24) hourSleep = 0;
+            }
+        }
     }
     public void notSleep() {
         sleepControl.instance.stopCount();
+
         canvasMain.SetActive(true);
         isSleep.SetActive(false);
+
         if (minuteSleep < 30) minuteSleep += 30;
         else {
             hourSleep += 1;
             minuteSleep -= 30;
             if (hourSleep == 24) hourSleep = 0;
         }
+
+        changeState(1);
+        changeSystemState(0);
     }
     void warningGasIsOut() {
         int cur_warn_hour = GetTime.getHour();
@@ -118,8 +130,56 @@ public class ManagerConnect : MonoBehaviour
         warn_day    = cur_warn_day;
         warn_month  = cur_warn_month;
         warn_year   = cur_warn_year;
+
         canvasMain.SetActive(false);
         warningGas.SetActive(true);
+
+        warningBell.Play();
+        changeSystemState(2);
+        changeState(4);
+    }
+    
+    public void stopWarningGas() {
+        canvasMain.SetActive(true);
+        warningGas.SetActive(false);
+
+        warningBell.Stop();
+        changeState(4);
+        changeSystemState(0);
+    }
+    bool changeSystemState(int to) {
+        if (system_state == to) return false;
+        switch (to) {
+            case 0:
+                system_state = 0;
+                return true;
+            case 1:
+                if (system_state == 2) {
+                    Debug.Log("can not warning sleep because gas");
+                    return false;
+                }
+                system_state = 1;
+                return true;
+                break;
+            case 2:
+                if (system_state == 1) {
+                    Debug.Log("stop sleep because gas");
+
+                    sleepControl.instance.stopCount();
+
+                    isSleep.SetActive(false);
+
+                    if (minuteSleep < 30) minuteSleep += 30;
+                    else {
+                        hourSleep += 1;
+                        minuteSleep -= 30;
+                        if (hourSleep == 24) hourSleep = 0;
+                    }
+                }
+                system_state = 2;
+                return true;
+        }
+        return false;
     }
     public void LogOut() {
         M2MqttUnity.Examples.ClientMQTT.instance.OnDestroy();
@@ -129,27 +189,36 @@ public class ManagerConnect : MonoBehaviour
         bool previous;
         switch (device) {
             case 1:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
-                if (light_state) SystemLog.instance.EnQueue("Lights: ON");
-                else {
+                if (light_state == false) SystemLog.instance.EnQueue("Lights: ON");
+                else
+                {
                     SystemLog.instance.EnQueue("Lights: OFF");
                     int cur_h = GetTime.getHour();
                     int cur_m = GetTime.getMinute();
                     if (cur_h >= 20 && cur_h <= 4) DataManage.instance.SaveTime(); // from 20h00 to 4h59
                     else if (cur_h == 5 && cur_m == 0) DataManage.instance.SaveTime(); // at 5h
                 }
+                M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
                 break;
             case 2:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
-                if (fan_state) SystemLog.instance.EnQueue("Fans: ON");
+                if (fan_state == false) SystemLog.instance.EnQueue("Fans: ON");
                 else SystemLog.instance.EnQueue("Fans: OFF");
+                M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
                 isAuto = false;
                 break;
             case 3:
-                M2MqttUnity.Examples.ClientMQTT.instance.publishHeater(!heater_state);
-                if (heater_state) SystemLog.instance.EnQueue("Heaters: ON");
+                if (heater_state == false) SystemLog.instance.EnQueue("Heaters: ON");
                 else SystemLog.instance.EnQueue("Heaters: OFF");
+                M2MqttUnity.Examples.ClientMQTT.instance.publishHeater(!heater_state);
                 isAuto = false;
+                break;
+            case 4:
+                M2MqttUnity.Examples.ClientMQTT.instance.publishBell(!bell_state);
+                break;
+            case 5:
+                if (door_state == false) SystemLog.instance.EnQueue("Door: OPEN");
+                else SystemLog.instance.EnQueue("Door: CLOSE");
+                M2MqttUnity.Examples.ClientMQTT.instance.publishDoor(!door_state);                
                 break;
         }
     }
@@ -164,5 +233,17 @@ public class ManagerConnect : MonoBehaviour
         }
         else SystemLog.instance.EnQueue("Auto Mode: OFF");
         isAuto = !isAuto;
+    }
+    public void updateAutoLight() {
+        if (isAutoLight) SystemLog.instance.EnQueue("Auto Light Mode: OFF");
+        else SystemLog.instance.EnQueue("Auto Light Mode: ON");
+        isAutoLight = !isAutoLight;
+    }
+    public void iHere() {
+        switch (system_state) {
+            case 1: notSleep(); return;
+            case 2: stopWarningGas(); return;
+            default: return;
+        }
     }
 }

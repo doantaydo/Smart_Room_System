@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ChangeActiveKey : MonoBehaviour
 {
     public Button save;
+    public Button returnLogin;
 
     public InputField userName;
     public InputField password;
@@ -20,6 +22,7 @@ public class ChangeActiveKey : MonoBehaviour
     void Start()
     {
         save.onClick.AddListener(Save);
+        returnLogin.onClick.AddListener(ReturnLogin);
     }
 
     // Update is called once per frame
@@ -47,11 +50,18 @@ public class ChangeActiveKey : MonoBehaviour
 
         //login = true;
 
-        /*
+        
         PlayerPrefs.SetString("cur_broker_uri", user.broker);
         PlayerPrefs.SetString("cur_access_token", user.accessToken);
         PlayerPrefs.SetString("cur_pwd_access_token", user.passwordToken);
-        */
-        //SceneManager.LoadScene("main_system");
+
+        PlayerPrefs.SetString("cur_user", username);
+
+        SceneManager.LoadScene("main_system");
+    }
+
+    void ReturnLogin()
+    {
+        SceneManager.LoadScene("Login");
     }
 }

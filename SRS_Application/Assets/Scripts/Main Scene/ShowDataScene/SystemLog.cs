@@ -17,7 +17,7 @@ public class SystemLog : MonoBehaviour
     }
     public void EnQueue(string mess) {
         queueLog.Enqueue(mess);
-        if (count < 9) count++;
+        if (count < 8) count++;
         else queueLog.Dequeue();
         printQueue();
     }

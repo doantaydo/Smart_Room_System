@@ -10,10 +10,12 @@ public class CreateAccount : MonoBehaviour
     public Button signUp;
     public List<InputField> input;
     public Text warning;
+    public Button returnLogin;
 
     void Start()
     {
         signUp.onClick.AddListener(SignUp);
+        returnLogin.onClick.AddListener(ReturnLogin);
     }
 
     // Update is called once per frame
@@ -56,6 +58,10 @@ public class CreateAccount : MonoBehaviour
         Account account = new Account(userName, brokerID, accessToken, password, passwordToken);
         BinarySerializer.Save<Account>(account, userName);
         //Debug.Log(userName);
+        SceneManager.LoadScene("Login");
+    }
+    void ReturnLogin()
+    {
         SceneManager.LoadScene("Login");
     }
 }
