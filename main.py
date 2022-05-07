@@ -32,7 +32,7 @@ def disconnected(client):
 def message(client, feed_id, payload):  
     print (feed_id + ": " + payload)      
     if isMicrobitConnected:
-        ser.write(("!" + str(payload) + "#").encode())
+        ser.write(("#" + str(payload)).encode())
 
 client = MQTTClient(AIO_USERNAME, AIO_KEY)
 client.on_connect = connected
