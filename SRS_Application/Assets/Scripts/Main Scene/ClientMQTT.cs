@@ -60,7 +60,7 @@ namespace M2MqttUnity.Examples {
             SubscribeTopics();
         }
         public bool isPub = false;
-        public int start_temp = 0, start_light = 2, start_gas = 1;
+        public int start_temp = -1000, start_light = 2, start_gas = 1;
         public bool start_led = false, start_fan = false;
         protected override void SubscribeTopics()
         {
@@ -69,6 +69,7 @@ namespace M2MqttUnity.Examples {
                 publishTemp(start_temp);
                 publishLight(0);
                 publishGas(0);
+
                 publishLed(false);
                 publishFan(false);
                 publishBell(false);
@@ -115,8 +116,7 @@ namespace M2MqttUnity.Examples {
             SystemLog.instance.EnQueue("Connected to server!!!");
         }
 
-        protected override void DecodeMessage(string topic, byte[] message)
-        {
+        protected override void DecodeMessage(string topic, byte[] message) {
             string msg = System.Text.Encoding.UTF8.GetString(message);
             msg_received_from_topic = msg;
             Debug.Log("Received: " + msg);

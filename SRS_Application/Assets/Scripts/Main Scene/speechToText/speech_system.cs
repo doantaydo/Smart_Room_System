@@ -90,7 +90,7 @@ namespace VoiceRecognition {
                 callFunction.turnDevice(2, false);
                 str = "Close the door";
             }
-            else if (e.Result.Text.Contains("turn on auto light mode at")) {
+            else if (e.Result.Text.Contains("turn on auto mode at")) {
                 int min = (int)e.Result.Semantics["h1"].Value * 10 + (int)e.Result.Semantics["h2"].Value;
                 int max = (int)e.Result.Semantics["m1"].Value * 10 + (int)e.Result.Semantics["m2"].Value;
                 callFunction.turnAutoMode(true, min, max);

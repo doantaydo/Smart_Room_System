@@ -41,18 +41,15 @@ public class ManagerConnect : MonoBehaviour
         // auto turn on/off FAN follow the temperature
         if (isAuto) {
             if (cur_temp < min_temp + (mid_temp - min_temp) / 2) {
-                if (!heater_state) changeState(3);
                 if (fan_state) changeState(2);
                 isAuto = true;
             }
             else if (cur_temp > max_temp - (max_temp - mid_temp) / 2) {
                 if (!fan_state) changeState(2);
-                if (heater_state) changeState(3);
                 isAuto = true;
             }
             else {
                 if (fan_state) changeState(2);
-                if (heater_state) changeState(3);
                 isAuto = true;
             }
         }

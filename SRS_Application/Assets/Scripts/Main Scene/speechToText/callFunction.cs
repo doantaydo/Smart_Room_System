@@ -42,6 +42,7 @@ public class callFunction : MonoBehaviour
     }
     // EXIT/QUIT
     public static void quitSystem() {
+        Debug.Log("QUIT");
         M2MqttUnity.Examples.ClientMQTT.instance.OnDestroy();
         Application.Quit();
     }

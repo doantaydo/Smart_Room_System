@@ -6510,8 +6510,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67798ef97e11d5d4aa7bc6e2bbd32340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LIGHT_POINT: 5
-  GAS_POINT: 5
+  LIGHT_POINT: 350
+  GAS_POINT: 700
   cur_temp: 0
   cur_light: 0
   cur_gas: 0
