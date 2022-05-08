@@ -48,6 +48,6 @@ public class sleepControl : MonoBehaviour
     }
     public void stopCount() {
         time = -1;
-        IsConst = false;
+        isCount = false;
     }
 }
