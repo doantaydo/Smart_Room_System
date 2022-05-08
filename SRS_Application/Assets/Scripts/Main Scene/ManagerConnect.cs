@@ -64,7 +64,7 @@ public class ManagerConnect : MonoBehaviour
 
         // warning if the user is sleeping
         int cur_h = GetTime.getHour(), cur_m = GetTime.getMinute();
-        if ((cur_h >= 20 && cur_h <= 4) || (cur_h == 5 && cur_m == 0) && light_state == true)
+        if ((cur_h >= 20 || cur_h <= 4) || (cur_h == 5 && cur_m == 0) && light_state == true)
             if ((cur_h > hourSleep) || (cur_h == hourSleep && cur_m >= minuteSleep))
                 warningSleeping();
         // update sleeping time
@@ -192,7 +192,7 @@ public class ManagerConnect : MonoBehaviour
                     SystemLog.instance.EnQueue("Lights: OFF");
                     int cur_h = GetTime.getHour();
                     int cur_m = GetTime.getMinute();
-                    if (cur_h >= 20 && cur_h <= 4) DataManage.instance.SaveTime(); // from 20h00 to 4h59
+                    if (cur_h >= 20 || cur_h <= 4) DataManage.instance.SaveTime(); // from 20h00 to 4h59
                     else if (cur_h == 5 && cur_m == 0) DataManage.instance.SaveTime(); // at 5h
                 }
                 M2MqttUnity.Examples.ClientMQTT.instance.publishLed(!light_state);
