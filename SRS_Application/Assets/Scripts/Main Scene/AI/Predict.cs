@@ -8,11 +8,13 @@ public class Predict
         double[] yVals,
         out double rSquared,
         out double yIntercept,
-        out double slope)
+        out double slope,
+        out double predictedValue
+        )
     {
         if (xVals.Length != yVals.Length)
         {
-            throw new Exception("Input values should be with the same length.");    
+            throw new Exception("Input values should have the same length.");    
         }
 
         double sumOfX = 0;
@@ -47,6 +49,9 @@ public class Predict
         rSquared = dblR * dblR;
         yIntercept = meanY - ((sCo / ssX) * meanX);
         slope = sCo / ssX;
+
+        // predictedVal = slope * day_of_prediction + intercept
+        predictedValue = (slope * (xVals[xVals.Length - 1] + 1)) + yIntercept;
     }
 
 }
