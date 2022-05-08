@@ -471,7 +471,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -267.9, y: -296}
+  m_AnchoredPosition: {x: -255, y: -343}
   m_SizeDelta: {x: 274.07, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &409234782
@@ -1384,7 +1384,7 @@ MonoBehaviour:
   returnLogin: {fileID: 409234782}
   userName: {fileID: 1163403326}
   password: {fileID: 643680355}
-  warningText: {fileID: 1801685935}
+  warningText: {fileID: 1801685936}
   activeKey: {fileID: 1403401807}
 --- !u!114 &1272576539
 MonoBehaviour:
@@ -1774,7 +1774,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 127.41, y: -296}
+  m_AnchoredPosition: {x: 140.30998, y: -343}
   m_SizeDelta: {x: 516.55, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1462418866
@@ -2475,7 +2475,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -240}
+  m_AnchoredPosition: {x: 0, y: -374}
   m_SizeDelta: {x: 1000, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1840213581

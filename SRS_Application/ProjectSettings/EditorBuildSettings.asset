@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ChangeActiveKey.unity
     guid: f86fd0f5afd096d49ba2ed6b4e8e5adc
+  - enabled: 1
+    path: Assets/Scenes/ChangePassword.unity
+    guid: 31bdaef3fb9d3504f9af35ea8c2c6813
   m_configObjects: {}
