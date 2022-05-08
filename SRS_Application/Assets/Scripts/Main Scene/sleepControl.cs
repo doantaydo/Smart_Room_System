@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,5 +48,6 @@ public class sleepControl : MonoBehaviour
     }
     public void stopCount() {
         time = -1;
+        IsConst = false;
     }
 }
