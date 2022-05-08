@@ -10,12 +10,12 @@ namespace VoiceRecognition {
         SpeechRecognitionEngine recognizer;
 
         Choices cmdlist, numbers, customChoice;
-        GrammarBuilder customTime, builder;
+        GrammarBuilder customTime, builder, customAuto;
         void SetUp() {
             recognizer = new SpeechRecognitionEngine();
 
             cmdlist = new Choices("turn on the light", "turn off the light", "turn on the fan", "turn off the fan", 
-            "open the door", "close the door", "turn on auto mode", "turn off auto mode", "turn on auto light mode", 
+            "open the door", "close the door", "turn off auto mode", "turn on auto light mode", 
             "turn off auto light mode", "quit", "exit", "log out", "yes i'm here");
             numbers = new Choices(); for (int i = 0; i < 10; i++) numbers.Add(new SemanticResultValue(i.ToString(), i));
 
@@ -35,6 +35,16 @@ namespace VoiceRecognition {
             customTime.Append("and");
             customTime.Append(new SemanticResultKey("s2", numbers));
             cmdlist.Add(customTime);
+
+            customAuto = new GrammarBuilder("turn on auto mode at");
+            customAuto.Append(new SemanticResultKey("h1", numbers));
+            customAuto.Append("and");
+            customAuto.Append(new SemanticResultKey("h2", numbers));
+            customAuto.Append("and");
+            customAuto.Append(new SemanticResultKey("m1", numbers));
+            customAuto.Append("and");
+            customAuto.Append(new SemanticResultKey("m2", numbers));
+            cmdlist.Add(customAuto);
 
             builder = new GrammarBuilder(cmdlist);
             recognizer.LoadGrammar(new Grammar(builder));
@@ -80,9 +90,11 @@ namespace VoiceRecognition {
                 callFunction.turnDevice(2, false);
                 str = "Close the door";
             }
-            else if (e.Result.Text == "turn on auto mode") {
-                callFunction.turnAutoMode(true);
-                str = "Turn on auto mode";
+            else if (e.Result.Text.Contains("turn on auto light mode at")) {
+                int min = (int)e.Result.Semantics["h1"].Value * 10 + (int)e.Result.Semantics["h2"].Value;
+                int max = (int)e.Result.Semantics["m1"].Value * 10 + (int)e.Result.Semantics["m2"].Value;
+                callFunction.turnAutoMode(true, min, max);
+                str = "Turn on auto mode from " + min.ToString() + " to " + max.ToString();
             }
             else if (e.Result.Text == "turn off auto mode") {
                 callFunction.turnAutoMode(false);
@@ -109,11 +121,17 @@ namespace VoiceRecognition {
                 callFunction.iHere();
             }
             else {
-                hh = (int)e.Result.Semantics["h1"].Value * 10 + (int)e.Result.Semantics["h2"].Value;
-                mm = (int)e.Result.Semantics["m1"].Value * 10 + (int)e.Result.Semantics["m2"].Value;
-                ss = (int)e.Result.Semantics["s1"].Value * 10 + (int)e.Result.Semantics["s2"].Value;
-                if (e.Result.Text.Contains("light")) callFunction.turnOffDeviceAt(0, hh, mm, ss);
-                else callFunction.turnOffDeviceAt(1, hh, mm, ss);
+                int hh = (int)e.Result.Semantics["h1"].Value * 10 + (int)e.Result.Semantics["h2"].Value;
+                int mm = (int)e.Result.Semantics["m1"].Value * 10 + (int)e.Result.Semantics["m2"].Value;
+                int ss = (int)e.Result.Semantics["s1"].Value * 10 + (int)e.Result.Semantics["s2"].Value;
+                if (e.Result.Text.Contains("light")) {
+                    callFunction.turnOffDeviceAt(0, hh, mm, ss);
+                    str = "Turn off the light at " + hh.ToString() + ":" + mm.ToString() + ":" + ss.ToString();
+                }
+                else {
+                    callFunction.turnOffDeviceAt(1, hh, mm, ss);
+                    str = "Turn off the fan at " + hh.ToString() + ":" + mm.ToString() + ":" + ss.ToString();
+                }
             }
             SystemLog.instance.EnQueue(str);
         }
