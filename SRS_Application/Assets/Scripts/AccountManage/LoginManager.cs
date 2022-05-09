@@ -10,6 +10,7 @@ public class LoginManager : MonoBehaviour
     public Button signUp;
     public Button logIn;
     public Button changeActiveKey;
+    public Button changePwd;
 
     public InputField userName;
     public InputField password;
@@ -24,7 +25,8 @@ public class LoginManager : MonoBehaviour
     {
         signUp.onClick.AddListener(SignUp);
         logIn.onClick.AddListener(LogIn);
-        changeActiveKey.onClick.AddListener(ChangeScene);
+        changeActiveKey.onClick.AddListener(ChangeKeyScene);
+        changePwd.onClick.AddListener(ChangePwdScene);
 
         PlayerPrefs.DeleteAll();
     }
@@ -66,8 +68,12 @@ public class LoginManager : MonoBehaviour
         SceneManager.LoadScene("main_system");
     }
 
-    void ChangeScene()
+    void ChangeKeyScene()
     {
         SceneManager.LoadScene("ChangeActiveKey");
+    }
+    void ChangePwdScene()
+    {
+        SceneManager.LoadScene("ChangePassword");
     }
 }
