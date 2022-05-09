@@ -1,13 +1,122 @@
 using System;
-using System.Speech.Recognition;
-using System.Speech.Synthesis;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Windows.Speech;
 
 namespace VoiceRecognition {
     public class speech_system : MonoBehaviour {
-        SpeechRecognitionEngine recognizer;
+        private KeywordRecognizer recognizer, numRec;
+        private Dictionary<string, Action> actions = new Dictionary<string, Action>();
+        string str = ""; int re = -1;
+
+
+        void Start()
+        {
+            actions.Add("turn on the light", LightOn);
+            actions.Add("turn off the light", LightOff);
+            actions.Add("turn on the fan", FanOn);
+            actions.Add("turn off the fan", FanOff);
+            actions.Add("open the door", DoorOn);
+            actions.Add("close the door", DoorOff);
+            actions.Add("turn off auto mode", AutoOff);
+            actions.Add("turn on auto light mode", ALOn);
+            actions.Add("turn off auto light mode", ALOff);
+            actions.Add("quit", callFunction.quitSystem);
+            actions.Add("out", callFunction.logOut);
+            actions.Add("yes i'm here", callFunction.iHere);
+            //actins.Add("turn on auto mode", AutoOn);
+
+            recognizer = new KeywordRecognizer(actions.Keys.ToArray());
+            recognizer.OnPhraseRecognized += RecognizedSpeech;
+            recognizer.Start();
+
+            List<string> list = new List<string>();
+            for (int i = 0; i <= 100; i++) list.Add(i.ToString());
+            string[] num = list.ToArray();
+            numRec = new KeywordRecognizer(num);
+            numRec.OnPhraseRecognized += RecognizedNum;
+        }
+
+        private void LightOn()
+        {
+            callFunction.turnDevice(0, true);
+            str = "Turn on the light";
+        }
+        private void LightOff()
+        {
+            callFunction.turnDevice(0, false);
+            str = "Turn off the light";
+        }
+        private void FanOn()
+        {
+            callFunction.turnDevice(1, true);
+            str = "Turn on the fan";
+        }
+        private void FanOff()
+        {
+            callFunction.turnDevice(1, false);
+            str = "Turn off the fan";
+        }
+        private void DoorOn()
+        {
+            callFunction.turnDevice(2, true);
+            str = "Door is open";
+        }
+        private void DoorOff()
+        {
+            callFunction.turnDevice(2, false);
+            str = "Door is closed";
+        }
+        private void AutoOff()
+        {
+            callFunction.turnAutoMode(false);
+            str = "Turn off auto mode";
+        }
+        private void ALOn()
+        {
+            callFunction.turnAutoLightMode(true);
+            str = "Turn on auto light mode";
+        }
+        private void ALOff()
+        {
+            callFunction.turnAutoLightMode(false);
+            str = "Turn off auto light mode";
+        }
+        private void AutoOn()
+        {
+            int min = 0, max = 0;
+            SystemLog.instance.EnQueue("from");
+            numRec.Start();
+            while (re == -1)
+            {
+                min = re;
+            }
+            re = -1;
+            SystemLog.instance.EnQueue("to");
+            while (re == -1)
+            {
+                max = re;
+            }
+            re = -1;
+            numRec.Stop();
+            callFunction.turnAutoMode(true, min, max);
+            str = "Turn on auto mode from " + min.ToString() + " to " + max.ToString();
+        }
+        void RecognizedNum(PhraseRecognizedEventArgs e)
+        {
+            re = Int32.Parse(e.text);
+        }
+
+        void RecognizedSpeech(PhraseRecognizedEventArgs e)
+        {
+            str = "";
+            actions[e.text].Invoke();
+            SystemLog.instance.EnQueue(str);
+        }
+        
+        /*SpeechRecognitionEngine recognizer;
 
         Choices cmdlist, numbers, customChoice;
         GrammarBuilder customTime, builder, customAuto;
@@ -134,6 +243,6 @@ namespace VoiceRecognition {
                 }
             }
             SystemLog.instance.EnQueue(str);
-        }
+        }*/
     }
 }

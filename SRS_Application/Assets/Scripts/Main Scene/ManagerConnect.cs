@@ -76,6 +76,7 @@ public class ManagerConnect : MonoBehaviour
         if (cur_h >= 6 && cur_h < 20) {
             if (hadUpdatedToDay == false) {
                 //call method update time
+                
                 hadUpdatedToDay = true;
             }
         }

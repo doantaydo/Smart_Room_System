@@ -1,5 +1,6 @@
 using System;
-using System.Diagnostics; 
+using System.Diagnostics;
+using UnityEngine;
 
 public class Predict 
 {
@@ -53,5 +54,4 @@ public class Predict
         // predictedVal = slope * day_of_prediction + intercept
         predictedValue = (slope * (xVals[xVals.Length - 1] + 1)) + yIntercept;
     }
-
 }
