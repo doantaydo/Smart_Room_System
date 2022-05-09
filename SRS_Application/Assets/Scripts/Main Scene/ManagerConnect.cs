@@ -36,7 +36,7 @@ public class ManagerConnect : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (cur_temp != -10000) temp_field.text = ((int)cur_temp).ToString();
+        if (cur_temp != -10000) temp_field.text = ((int)cur_temp).ToString("D2");
         // auto mod
         // auto turn on/off FAN follow the temperature
         if (isAuto) {
