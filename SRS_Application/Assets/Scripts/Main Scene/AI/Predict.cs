@@ -1,18 +1,33 @@
 using System;
-using System.Diagnostics;
-using UnityEngine;
+using System.Diagnostics; 
 
 public class Predict 
 {
   public static void LinearRegression (
-        double[] xVals,
-        double[] yVals,
-        out double rSquared,
-        out double yIntercept,
-        out double slope,
-        out double predictedValue
+        List<UserData> data,
+        out int hour,
+        out int minute
         )
     {
+        double[] xVals = new double[data.Count];
+        double[] yVals = new double[data.Count];
+
+        if (data.Count == 0)
+        {
+          hour = 8;
+          minute = 0;
+          return;
+        }
+        for (var i = 0; i < data.Count; i++)
+        {
+          
+          xVals[i] = i +1;
+              
+          yVals[i] = data[i].getValue();
+          if (yVals[i] <= 5)
+            yVals[i] += 24;
+        }
+    
         if (xVals.Length != yVals.Length)
         {
             throw new Exception("Input values should have the same length.");    
@@ -24,9 +39,10 @@ public class Predict
         double sumOfYSq = 0;
         double sumCodeviates = 0;
 
-        for (var i = 0; i < xVals.Length; i++)
+        for (int i = 0; i < xVals.Length; i++)
         {
             var x = xVals[i];
+            
             var y = yVals[i];
             sumCodeviates += x * y;
             sumOfX += x;
@@ -35,23 +51,29 @@ public class Predict
             sumOfYSq += y * y;
         }
 
-        var count = xVals.Length;
-        var ssX = sumOfXSq - ((sumOfX * sumOfX) / count);
-        var ssY = sumOfYSq - ((sumOfY * sumOfY) / count);
+        double count = xVals.Length;
+        double ssX = sumOfXSq - ((sumOfX * sumOfX) / count);
+        double ssY = sumOfYSq - ((sumOfY * sumOfY) / count);
 
-        var rNumerator = (count * sumCodeviates) - (sumOfX * sumOfY);
-        var rDenom = (count * sumOfXSq - (sumOfX * sumOfX)) * (count * sumOfYSq - (sumOfY * sumOfY));
-        var sCo = sumCodeviates - ((sumOfX * sumOfY) / count);
+        double rNumerator = (count * sumCodeviates) - (sumOfX * sumOfY);
+        double rDenom = (count * sumOfXSq - (sumOfX * sumOfX)) * (count * sumOfYSq - (sumOfY * sumOfY));
+        double sCo = sumCodeviates - ((sumOfX * sumOfY) / count);
 
-        var meanX = sumOfX / count;
-        var meanY = sumOfY / count;
-        var dblR = rNumerator / Math.Sqrt(rDenom);
+        double meanX = sumOfX / count;
+        double meanY = sumOfY / count;
+        double dblR = rNumerator / Math.Sqrt(rDenom);
 
-        rSquared = dblR * dblR;
-        yIntercept = meanY - ((sCo / ssX) * meanX);
-        slope = sCo / ssX;
+        double rSquared = dblR * dblR;
+        double yIntercept = meanY - ((sCo / ssX) * meanX);
+    
+        double slope = sCo / ssX;
 
         // predictedVal = slope * day_of_prediction + intercept
-        predictedValue = (slope * (xVals[xVals.Length - 1] + 1)) + yIntercept;
+        double predictedValue = (slope * (xVals[xVals.Length - 1] + 1)) + yIntercept;
+        
+        hour = (int)(predictedValue);
+        minute =(int)(60*(predictedValue - (double)hour));
+        //string predictedTime = hour.ToString("D2") + ":" + minute.ToString("D2");
     }
+
 }
