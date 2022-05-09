@@ -149,7 +149,7 @@ public class UserData
     public string date;
     public string time_turn_off_light; // hh:mm
 
-    float getValue() {
+    public float getValue() {
         float h = float.Parse(time_turn_off_light.Substring(0, 1));
         float m = float.Parse(time_turn_off_light.Substring(3, 4));
         return h + m / 60;
