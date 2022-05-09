@@ -71,8 +71,13 @@ public class ManagerConnect : MonoBehaviour
         updateSleepTime();
     }
     bool hadUpdatedToDay = false;
+    int countSleep = 0;
     void updateSleepTime() {
         int cur_h = GetTime.getHour();
+        if (countSleep < 20)  {
+            countSleep++;
+            return;
+        }
         if (cur_h >= 6 && cur_h < 20) {
             if (hadUpdatedToDay == false) {
                 //call method update time
@@ -80,7 +85,10 @@ public class ManagerConnect : MonoBehaviour
                 hadUpdatedToDay = true;
             }
         }
-        else hadUpdatedToDay = false;
+        else {
+            hadUpdatedToDay = false;
+            countSleep = 0;
+        }
     }
     void warningSleeping() {
         if (changeSystemState(1)) {

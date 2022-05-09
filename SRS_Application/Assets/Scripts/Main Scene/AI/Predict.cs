@@ -1,7 +1,11 @@
 using System;
 using System.Diagnostics; 
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
 
-public class Predict 
+public class Predict : MonoBehaviour
 {
   public static void LinearRegression (
         List<UserData> data,
@@ -9,6 +13,7 @@ public class Predict
         out int minute
         )
     {
+        //List<UserData> data = DataManage.
         double[] xVals = new double[data.Count];
         double[] yVals = new double[data.Count];
 
@@ -72,7 +77,7 @@ public class Predict
         double predictedValue = (slope * (xVals[xVals.Length - 1] + 1)) + yIntercept;
         
         hour = (int)(predictedValue);
-        minute =(int)(60*(predictedValue - (double)hour));
+        minute = (int)(60*(predictedValue - (double)hour));
         //string predictedTime = hour.ToString("D2") + ":" + minute.ToString("D2");
     }
 
