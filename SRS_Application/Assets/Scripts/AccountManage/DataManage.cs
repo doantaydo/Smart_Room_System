@@ -150,8 +150,8 @@ public class UserData
     public string time_turn_off_light; // hh:mm
 
     public double getValue() {
-        double h = double.Parse(time_turn_off_light.Substring(0, 1));
-        double m = double.Parse(time_turn_off_light.Substring(3, 4));
+        double h = (time_turn_off_light[0] - 48) * 10 + time_turn_off_light[1] - 48;
+        double m = (time_turn_off_light[3] - 48) * 10 + time_turn_off_light[4] - 48;
         return h + m / 60;
     }
 }
