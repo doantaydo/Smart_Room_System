@@ -13,7 +13,11 @@ public class Predict : MonoBehaviour
         out int minute
         )
     {
-        //List<UserData> data = DataManage.
+        if (data == null) {
+            hour = 8;
+            minute = 0;
+            return;
+        }
         double[] xVals = new double[data.Count];
         double[] yVals = new double[data.Count];
 
@@ -75,6 +79,7 @@ public class Predict : MonoBehaviour
 
         // predictedVal = slope * day_of_prediction + intercept
         double predictedValue = (slope * (xVals[xVals.Length - 1] + 1)) + yIntercept;
+        if (predictedValue >= 24) predictedValue -= 24;
         
         hour = (int)(predictedValue);
         minute = (int)(60*(predictedValue - (double)hour));

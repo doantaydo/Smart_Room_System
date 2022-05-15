@@ -131,10 +131,14 @@ namespace M2MqttUnity.Examples {
                 ManagerConnect.instance.door_state = (msg == "7");
             if (topic == topic_temp)
                 ManagerConnect.instance.cur_temp = float.Parse(msg);
-            if (topic == topic_light)
+            if (topic == topic_light) {
                 ManagerConnect.instance.cur_light = float.Parse(msg);
-            if (topic == topic_gas)
+                Debug.Log("LIGHT: " + msg);
+            }   
+            if (topic == topic_gas) {
                 ManagerConnect.instance.cur_gas = float.Parse(msg);
+                Debug.Log("GAS: " + msg);
+            }
         }
 
         private void StoreMessage(string eventMsg) {

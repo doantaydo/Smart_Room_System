@@ -6,7 +6,7 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 public class ManagerConnect : MonoBehaviour
 {
     public static ManagerConnect instance;
-    public float LIGHT_POINT, GAS_POINT;
+    private float LIGHT_POINT = 300, GAS_POINT = 200;
     // DATA OF USER
     public float cur_temp, cur_light, cur_gas;
     public Text temp_field;
@@ -81,8 +81,13 @@ public class ManagerConnect : MonoBehaviour
         if (cur_h >= 6 && cur_h < 20) {
             if (hadUpdatedToDay == false) {
                 //call method update time
-                //Predict.LinearRegression(DataManage.instance.GetData(), out hourSleep, out minuteSleep);
-                hadUpdatedToDay = true;
+                Predict.LinearRegression(DataManage.instance.GetData(), out hourSleep, out minuteSleep);
+                if (hourSleep != 8) {
+                    hadUpdatedToDay = true;
+                    Debug.Log("Hour sleep: " + hourSleep);
+                    Debug.Log("Minute sleep: " + minuteSleep);
+                }
+                else countSleep = 0;
             }
         }
         else {
@@ -210,13 +215,11 @@ public class ManagerConnect : MonoBehaviour
                 if (fan_state == false) SystemLog.instance.EnQueue("Fans: ON");
                 else SystemLog.instance.EnQueue("Fans: OFF");
                 M2MqttUnity.Examples.ClientMQTT.instance.publishFan(!fan_state);
-                isAuto = false;
                 break;
             case 3:
                 if (heater_state == false) SystemLog.instance.EnQueue("Heaters: ON");
                 else SystemLog.instance.EnQueue("Heaters: OFF");
                 M2MqttUnity.Examples.ClientMQTT.instance.publishHeater(!heater_state);
-                isAuto = false;
                 break;
             case 4:
                 M2MqttUnity.Examples.ClientMQTT.instance.publishBell(!bell_state);

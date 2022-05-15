@@ -100,28 +100,32 @@ public class DataManage : MonoBehaviour
     {
         string fileName = PlayerPrefs.GetString("cur_user") + ".json";
         List<UserData> dataSet = new List<UserData>();
+        try {
+            var json = File.ReadAllText(GetFilePath(fileName));
+            var jObject = JObject.Parse(json);
 
-        var json = File.ReadAllText(GetFilePath(fileName));
-        var jObject = JObject.Parse(json);
-
-        if (jObject != null)
-        {
-            JArray data = (JArray)jObject["data"];
-            if (data != null)
+            if (jObject != null)
             {
-                foreach (var row in data)
+                JArray data = (JArray)jObject["data"];
+                if (data != null)
                 {
-                    UserData item = new UserData
+                    foreach (var row in data)
                     {
-                        date = row["date"].ToString(),
-                        time_turn_off_light = row["time_turn_off_light"].ToString(),
-                    };
-                    dataSet.Add(item);
+                        UserData item = new UserData
+                        {
+                            date = row["date"].ToString(),
+                            time_turn_off_light = row["time_turn_off_light"].ToString(),
+                        };
+                        dataSet.Add(item);
+                    }
                 }
             }
-        }
 
-        return dataSet;
+            return dataSet;
+        }
+        catch {
+            return null;
+        }
     }
     /*
     public int setEndDay(string time)
